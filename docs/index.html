@@ -35,6 +35,8 @@
       <script>
         $(function() {
           var langs = [];
+            langs.push("javascript");
+            langs.push("typescript");
           setupLanguages( langs );
         });
       </script>
@@ -57,6 +59,8 @@
         
       </div>
         <div class="lang-selector">
+              <a href="#" data-language-name="javascript">javascript</a>
+              <a href="#" data-language-name="typescript">typescript</a>
         </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -134,6 +138,38 @@ assert( !msg.isValid() ); <span class="hljs-comment">// Is not valid because msg
 
 <span class="hljs-comment">// Listen for the changes in aggregation tree...</span>
 msg.on( <span class="hljs-string">'change'</span>, () =&gt; <span class="hljs-built_in">console</span>.log( <span class="hljs-string">'change!!!'</span> ) );
+
+msg.transaction( <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { <span class="hljs-comment">// Prepare to make the sequence of changes on msg</span>
+    msg.author.name = <span class="hljs-string">'John Dee'</span>; <span class="hljs-comment">// No 'change' event yet as we're in the transaction. </span>
+    msg.author.email = <span class="hljs-string">'dee@void.com'</span>; 
+
+    assert( msg.isValid() ); <span class="hljs-comment">// Now msg is valid as all of its attributes are valid.</span>
+}); <span class="hljs-comment">// Got single 'change!!!' message in the console.</span>
+</code></pre>
+<pre><code class="highlight typescript"><span class="hljs-keyword">import</span> <span class="hljs-string">"reflect-metadata"</span>
+<span class="hljs-keyword">import</span> { define, attr, Record } <span class="hljs-keyword">from</span> <span class="hljs-string">'type-r'</span>
+
+<span class="hljs-comment">// Define email attribute metatype with encapsulated validation check.</span>
+<span class="hljs-keyword">const</span> Email = <span class="hljs-keyword">type</span>( <span class="hljs-built_in">String</span> ).check( <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x! || x.indexOf( <span class="hljs-string">'@'</span> ) &gt;= <span class="hljs-number">0</span>, <span class="hljs-string">'Invalid email'</span> );
+
+<span class="hljs-meta">@define</span> <span class="hljs-keyword">class</span> User <span class="hljs-keyword">extends</span> Record {
+    <span class="hljs-meta">@type</span>( <span class="hljs-built_in">String</span> ).isRequired.as name : <span class="hljs-built_in">string</span> <span class="hljs-comment">// should not be empty for the record to be valid.</span>
+    <span class="hljs-meta">@type</span>( Email ).isRequired.as email : <span class="hljs-built_in">string</span>
+}
+
+<span class="hljs-meta">@define</span> <span class="hljs-keyword">class</span> Message <span class="hljs-keyword">extends</span> Record {
+    <span class="hljs-meta">@attr</span> created : <span class="hljs-built_in">Date</span> <span class="hljs-comment">//  = new Date()</span>
+    <span class="hljs-meta">@attr</span> author  : User, <span class="hljs-comment">// aggregated User record.</span>
+    <span class="hljs-meta">@type</span>( User.Collection ).as to : Collection&lt;User&gt;, <span class="hljs-comment">// aggregating collection of users</span>
+    <span class="hljs-meta">@attr</span> subject : <span class="hljs-built_in">string</span>
+    <span class="hljs-meta">@attr</span> body    : <span class="hljs-built_in">string</span>
+}
+
+<span class="hljs-keyword">const</span> msg = <span class="hljs-keyword">new</span> Message();
+assert( !msg.isValid() ); <span class="hljs-comment">// Is not valid because msg.author has empty attributes</span>
+
+<span class="hljs-comment">// Listen for the changes in aggregation tree...</span>
+msg.on( <span class="hljs-string">'change'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log( <span class="hljs-string">'change!!!'</span> ) );
 
 msg.transaction( <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { <span class="hljs-comment">// Prepare to make the sequence of changes on msg</span>
     msg.author.name = <span class="hljs-string">'John Dee'</span>; <span class="hljs-comment">// No 'change' event yet as we're in the transaction. </span>
@@ -254,6 +290,31 @@ msg.transaction( <span class="hljs-function"><span class="hljs-params">()</span>
 users.on( <span class="hljs-string">'changes'</span>, () =&gt; updateUI( users ) ); <span class="hljs-comment">// ⟵ listen to the changes.</span>
 
 users.set( json, { <span class="hljs-attr">parse</span> : <span class="hljs-literal">true</span> } ); <span class="hljs-comment">// ⟵ parse raw JSON from the server.</span>
+users.updateEach( <span class="hljs-function"><span class="hljs-params">user</span> =&gt;</span> user.firstName = <span class="hljs-string">''</span> ); <span class="hljs-comment">// ⟵ bulk update triggering 'changes' once</span>
+</code></pre>
+<pre><code class="highlight typescript"><span class="hljs-keyword">import</span> { define, attr, <span class="hljs-keyword">type</span>, Record, Collection } <span class="hljs-keyword">from</span> <span class="hljs-string">'type-r'</span>
+
+<span class="hljs-comment">// ⤹ required to make magic work  </span>
+<span class="hljs-meta">@define</span> <span class="hljs-keyword">class</span> User <span class="hljs-keyword">extends</span> Record {
+    <span class="hljs-comment">// ⤹ attribute's declaration</span>
+    <span class="hljs-meta">@attr</span> firstName : <span class="hljs-built_in">string</span>, <span class="hljs-comment">// ⟵ String type is extracted from the TS design type</span>
+    <span class="hljs-meta">@attr</span> createdAt : <span class="hljs-built_in">Date</span>, <span class="hljs-comment">// ⟵ And it works for any constructor.</span>
+
+    <span class="hljs-meta">@type</span>( <span class="hljs-built_in">String</span> ).as lastName : <span class="hljs-built_in">any</span>, <span class="hljs-comment">// ⟵ Or you can explicitly specify dynamic attribute type</span>
+    <span class="hljs-meta">@type</span>( <span class="hljs-built_in">String</span> ).value( <span class="hljs-literal">null</span> ).as email : <span class="hljs-built_in">string</span>, <span class="hljs-comment">//⟵ and you can attach metadata</span>
+
+    <span class="hljs-comment">// And you can attach ⤹ more metadata to fine-tune attribute's behavior</span>
+    <span class="hljs-meta">@type</span>( <span class="hljs-built_in">Date</span> ).value( <span class="hljs-literal">null</span> ).toJSON( <span class="hljs-literal">false</span> ).as <span class="hljs-comment">// ⟵ not serializable</span>
+        lastLogin : <span class="hljs-built_in">Date</span> 
+}
+
+<span class="hljs-keyword">const</span> user = <span class="hljs-keyword">new</span> User();
+<span class="hljs-built_in">console</span>.log( user.createdAt ); <span class="hljs-comment">// ⟵ this is an instance of Date created for you.</span>
+
+<span class="hljs-keyword">const</span> users : Collection&lt;User&gt; = <span class="hljs-keyword">new</span> User.Collection(); <span class="hljs-comment">// ⟵ Collections are defined automatically.</span>
+users.on( <span class="hljs-string">'changes'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> updateUI( users ) ); <span class="hljs-comment">// ⟵ listen to the changes.</span>
+
+users.set( json, { parse : <span class="hljs-literal">true</span> } ); <span class="hljs-comment">// ⟵ parse raw JSON from the server.</span>
 users.updateEach( <span class="hljs-function"><span class="hljs-params">user</span> =&gt;</span> user.firstName = <span class="hljs-string">''</span> ); <span class="hljs-comment">// ⟵ bulk update triggering 'changes' once</span>
 </code></pre>
 <h2 id="definition">Definition</h2>

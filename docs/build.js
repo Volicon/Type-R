@@ -37,6 +37,12 @@ highlight.registerLanguage('shell', function (highlight) {
   return bash
 })
 
+var esnext = highlight.getLanguage('javascript')
+highlight.registerLanguage('esnext', function (highlight) {
+  return esnext;
+})
+
+
 // Easier than changing Slate's js
 marked.defaults.langPrefix = 'highlight '
 

@@ -373,7 +373,7 @@ html, body {
 }
 
 .tocify-wrapper .lang-selector {
-    display: none
+   /* display: none */
 }
 
 .tocify-wrapper .lang-selector a {
@@ -903,11 +903,11 @@ html, body {
     }
 
     .tocify-wrapper .lang-selector {
-        display: block
+        /* display: block */
     }
 
     .page-wrapper .lang-selector {
-        display: none
+        /* display: none */
     }
 
     .content pre, .content blockquote {

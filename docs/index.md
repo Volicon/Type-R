@@ -7,6 +7,10 @@ toc_footers:
   - <a href="https://groups.google.com/forum/#!forum/volicon-open-source">Ask the question</a>
   - <a href="http://www.volicon.com/">Supported by <img style="vertical-align: middle" src="images/volicon_verizon_dm.png"/></a>
 
+language_tabs:
+  - javascript
+  - typescript
+
 includes:
   - record
   - collection
@@ -69,6 +73,40 @@ const Email = String.has.check( x => x! || x.indexOf( '@' ) >= 0, 'Invalid email
         subject : '',
         body    : ''
     }
+}
+
+const msg = new Message();
+assert( !msg.isValid() ); // Is not valid because msg.author has empty attributes
+
+// Listen for the changes in aggregation tree...
+msg.on( 'change', () => console.log( 'change!!!' ) );
+
+msg.transaction( () => { // Prepare to make the sequence of changes on msg
+    msg.author.name = 'John Dee'; // No 'change' event yet as we're in the transaction. 
+    msg.author.email = 'dee@void.com'; 
+
+    assert( msg.isValid() ); // Now msg is valid as all of its attributes are valid.
+}); // Got single 'change!!!' message in the console.
+```
+
+```typescript
+import "reflect-metadata"
+import { define, attr, Record } from 'type-r'
+
+// Define email attribute metatype with encapsulated validation check.
+const Email = type( String ).check( x => x! || x.indexOf( '@' ) >= 0, 'Invalid email' );
+
+@define class User extends Record {
+    @type( String ).isRequired.as name : string // should not be empty for the record to be valid.
+    @type( Email ).isRequired.as email : string
+}
+
+@define class Message extends Record {
+    @attr created : Date //  = new Date()
+    @attr author  : User, // aggregated User record.
+    @type( User.Collection ).as to : Collection<User>, // aggregating collection of users
+    @attr subject : string
+    @attr body    : string
 }
 
 const msg = new Message();

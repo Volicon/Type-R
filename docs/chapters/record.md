@@ -28,6 +28,33 @@ users.set( json, { parse : true } ); // ⟵ parse raw JSON from the server.
 users.updateEach( user => user.firstName = '' ); // ⟵ bulk update triggering 'changes' once
 ```
 
+```typescript
+import { define, attr, type, Record, Collection } from 'type-r'
+
+// ⤹ required to make magic work  
+@define class User extends Record {
+    // ⤹ attribute's declaration
+    @attr firstName : string, // ⟵ String type is extracted from the TS design type
+    @attr createdAt : Date, // ⟵ And it works for any constructor.
+
+    @type( String ).as lastName : any, // ⟵ Or you can explicitly specify dynamic attribute type
+    @type( String ).value( null ).as email : string, //⟵ and you can attach metadata
+    
+    // And you can attach ⤹ more metadata to fine-tune attribute's behavior
+    @type( Date ).value( null ).toJSON( false ).as // ⟵ not serializable
+        lastLogin : Date 
+}
+
+const user = new User();
+console.log( user.createdAt ); // ⟵ this is an instance of Date created for you.
+
+const users : Collection<User> = new User.Collection(); // ⟵ Collections are defined automatically.
+users.on( 'changes', () => updateUI( users ) ); // ⟵ listen to the changes.
+
+users.set( json, { parse : true } ); // ⟵ parse raw JSON from the server.
+users.updateEach( user => user.firstName = '' ); // ⟵ bulk update triggering 'changes' once
+```
+
 ## Definition
 
 Record is defined as a regular ES6 class, except:
