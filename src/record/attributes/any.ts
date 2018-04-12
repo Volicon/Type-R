@@ -2,14 +2,12 @@ import { setAttribute, AttributesContainer, AttributeUpdatePipeline, RecordTrans
 import { tools } from '../../object-plus'
 import { Owner, Transactional, TransactionOptions } from '../../transactions'
 import { IOEndpoint } from '../../io-tools'
+import { getBaseClass } from '../../object-plus/tools';
+
+declare const Map : any;
+const _metatypes = new Map();
 
 const { notEqual, assign} = tools;
-
-declare global {
-    interface Function {
-        _attribute : typeof AnyType
-    }
-}
 
 export type Transform = ( this : AnyType, next : any, prev : any, record : AttributesContainer, options : TransactionOptions ) => any;
 export type ChangeHandler = ( this : AnyType, next : any, prev : any, record : AttributesContainer, options : TransactionOptions ) => void;
@@ -49,10 +47,26 @@ const emptyOptions : TransactionOptions = {};
  * Typeless attribute. Is the base class for all other attributes.
  */
 export class AnyType implements AttributeUpdatePipeline {
+    static register( ...ctors : Function[] ){
+        for( let Ctor of ctors ){
+            _metatypes.set( Ctor, this );
+        }
+    }
+
+    static getFor( Ctor : Function ) : typeof AnyType {
+        let BaseClass = Ctor;
+        do {
+            const Attr = _metatypes.get( BaseClass );
+            if( Attr ) return Attr;
+        }
+        while( BaseClass = getBaseClass( BaseClass ) );
+
+        return AnyType;
+    }
+
     // Factory method to create attribute from options 
     static create( options : AttributeOptions, name : string ) : AnyType {
-        const type = options.type,
-              AttributeCtor = options._attribute || ( type ? type._attribute : AnyType );
+        const AttributeCtor = options._attribute || this.getFor( options.type );
 
         return new AttributeCtor( name, options );
     }

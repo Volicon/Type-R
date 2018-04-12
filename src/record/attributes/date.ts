@@ -61,7 +61,7 @@ export class DateType extends AnyType {
     dispose(){}
 }
 
-Date._attribute = DateType;
+DateType.register( Date );
 
 const msDatePattern  = /\/Date\(([0-9]+)\)\//;
 
@@ -91,25 +91,20 @@ declare global {
     }
 }
 
-Object.defineProperties( Date, {
-    microsoft : {
-        get(){
-            return new ChainableAttributeSpec({
-                type : Date,
-                _attribute : MSDateType
-            })
-        }
-    },
-
-    timestamp : {
-        get(){
-            return new ChainableAttributeSpec({
-                type : Date,
-                _attribute : TimestampType
-            })
-        }
-    }
+export const Timestamp = new ChainableAttributeSpec({
+    type : Date,
+    _attribute : TimestampType
 });
+
+Date.timestamp = Timestamp;
+
+export const MsDate = new ChainableAttributeSpec({
+    type : Date,
+    _attribute : MSDateType
+});
+
+Date.microsoft = MsDate;
+
 
 // If ISO date is not supported by date constructor (such as in Safari), polyfill it.
 function supportsDate( date ){

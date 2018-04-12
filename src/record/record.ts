@@ -487,7 +487,8 @@ Record.prototype.AttributesCopy = BaseRecordAttributesCopy;
 const IdAttribute = AnyType.create({ value : void 0 }, 'id' );
 Record.prototype._attributes = { id : IdAttribute };
 Record.prototype._attributesArray = [ IdAttribute ];
-Record._attribute = AggregatedType;
+
+AggregatedType.register( Record );
 
 import { shouldBeAnObject } from './attributes'
 

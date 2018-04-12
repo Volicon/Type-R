@@ -1306,6 +1306,7 @@ var RecordTransaction = (function () {
     return RecordTransaction;
 }());
 
+var _metatypes = new Map();
 var notEqual$1 = notEqual;
 var assign$5 = assign;
 var emptyOptions = {};
@@ -1351,8 +1352,27 @@ var AnyType = (function () {
         this.transform = transforms.length ? transforms.reduce(chainTransforms) : this.transform;
         this.handleChange = changeHandlers.length ? changeHandlers.reduce(chainChangeHandlers) : this.handleChange;
     }
+    AnyType.register = function () {
+        var ctors = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            ctors[_i] = arguments[_i];
+        }
+        for (var _a = 0, ctors_1 = ctors; _a < ctors_1.length; _a++) {
+            var Ctor = ctors_1[_a];
+            _metatypes.set(Ctor, this);
+        }
+    };
+    AnyType.getFor = function (Ctor) {
+        var BaseClass = Ctor;
+        do {
+            var Attr_1 = _metatypes.get(BaseClass);
+            if (Attr_1)
+                return Attr_1;
+        } while (BaseClass = getBaseClass(BaseClass));
+        return AnyType;
+    };
     AnyType.create = function (options, name) {
-        var type = options.type, AttributeCtor = options._attribute || (type ? type._attribute : AnyType);
+        var AttributeCtor = options._attribute || this.getFor(options.type);
         return new AttributeCtor(name, options);
     };
     AnyType.prototype.canBeUpdated = function (prev, next, options) { };
@@ -1654,10 +1674,14 @@ var ChainableAttributeSpec = (function () {
 }());
 function emptyFunction() { }
 function type(spec) {
-    return spec instanceof ChainableAttributeSpec ? spec : new ChainableAttributeSpec({
+    if (spec instanceof ChainableAttributeSpec)
+        return spec;
+    var Type = AnyType.getFor(spec);
+    return new ChainableAttributeSpec({
+        _attribute: Type,
         type: spec,
-        value: spec._attribute.defaultValue,
-        hasCustomDefault: spec._attribute.defaultValue !== void 0
+        value: Type.defaultValue,
+        hasCustomDefault: Type.defaultValue !== void 0
     });
     
 }
@@ -1729,7 +1753,7 @@ var DateType = (function (_super) {
     DateType.prototype.dispose = function () { };
     return DateType;
 }(AnyType));
-Date._attribute = DateType;
+DateType.register(Date);
 var msDatePattern = /\/Date\(([0-9]+)\)\//;
 var MSDateType = (function (_super) {
     __extends(MSDateType, _super);
@@ -1756,24 +1780,16 @@ var TimestampType = (function (_super) {
     TimestampType.prototype.toJSON = function (value) { return value && value.getTime(); };
     return TimestampType;
 }(DateType));
-Object.defineProperties(Date, {
-    microsoft: {
-        get: function () {
-            return new ChainableAttributeSpec({
-                type: Date,
-                _attribute: MSDateType
-            });
-        }
-    },
-    timestamp: {
-        get: function () {
-            return new ChainableAttributeSpec({
-                type: Date,
-                _attribute: TimestampType
-            });
-        }
-    }
+var Timestamp = new ChainableAttributeSpec({
+    type: Date,
+    _attribute: TimestampType
 });
+Date.timestamp = Timestamp;
+var MsDate = new ChainableAttributeSpec({
+    type: Date,
+    _attribute: MSDateType
+});
+Date.microsoft = MsDate;
 function supportsDate(date) {
     return !isNaN((new Date(date)).getTime());
 }
@@ -1833,7 +1849,6 @@ var ImmutableClassType = (function (_super) {
     };
     return ImmutableClassType;
 }(AnyType));
-Function.prototype._attribute = ImmutableClassType;
 var PrimitiveType = (function (_super) {
     __extends(PrimitiveType, _super);
     function PrimitiveType() {
@@ -1859,7 +1874,7 @@ var PrimitiveType = (function (_super) {
     };
     return PrimitiveType;
 }(AnyType));
-Boolean._attribute = String._attribute = PrimitiveType;
+PrimitiveType.register(Boolean, String);
 var NumericType = (function (_super) {
     __extends(NumericType, _super);
     function NumericType() {
@@ -1882,11 +1897,10 @@ var NumericType = (function (_super) {
     };
     return NumericType;
 }(PrimitiveType));
-Number._attribute = NumericType;
 function Integer(x) {
     return x ? Math.round(x) : 0;
 }
-Integer._attribute = NumericType;
+NumericType.register(Number, Integer);
 Number.integer = Integer;
 if (typeof window !== 'undefined') {
     window.Integer = Number.integer;
@@ -1910,7 +1924,7 @@ var ArrayType = (function (_super) {
     };
     return ArrayType;
 }(AnyType));
-Array._attribute = ArrayType;
+ArrayType.register(Array);
 var ObjectType = (function (_super) {
     __extends(ObjectType, _super);
     function ObjectType() {
@@ -1925,7 +1939,7 @@ var ObjectType = (function (_super) {
     };
     return ObjectType;
 }(AnyType));
-Object._attribute = ObjectType;
+ObjectType.register(Object);
 function doNothing() { }
 var FunctionType = (function (_super) {
     __extends(FunctionType, _super);
@@ -1944,7 +1958,7 @@ var FunctionType = (function (_super) {
     FunctionType.prototype.clone = function (value) { return value; };
     return FunctionType;
 }(AnyType));
-Function._attribute = FunctionType;
+FunctionType.register(Function);
 
 var on$5 = on$2;
 var off$5 = off$2;
@@ -2427,7 +2441,7 @@ Record.prototype.AttributesCopy = BaseRecordAttributesCopy;
 var IdAttribute = AnyType.create({ value: void 0 }, 'id');
 Record.prototype._attributes = { id: IdAttribute };
 Record.prototype._attributesArray = [IdAttribute];
-Record._attribute = AggregatedType;
+AggregatedType.register(Record);
 function typeCheck(record, values) {
     if (shouldBeAnObject(record, values)) {
         var _attributes = record._attributes;
@@ -2479,7 +2493,6 @@ Record.onDefine = function (definition, BaseClass) {
     if (definition.endpoint)
         this.Collection.prototype._endpoint = definition.endpoint;
 };
-Record._attribute = AggregatedType;
 createSharedTypeSpec(Record, SharedType);
 function getAttributes(_a) {
     var defaults$$1 = _a.defaults, attributes = _a.attributes, idAttribute = _a.idAttribute;
@@ -2911,7 +2924,7 @@ var Collection = (function (_super) {
         }
         Mixable.mixins.populate(RefsCollection);
         RefsCollection.prototype = this.prototype;
-        RefsCollection._attribute = CollectionRefsType;
+        CollectionRefsType.register(RefsCollection);
         this.Refs = this.Subset = RefsCollection;
         Transactional.onExtend.call(this, BaseClass);
         createSharedTypeSpec(this, SharedType);

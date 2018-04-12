@@ -13,7 +13,7 @@ import { TransactionOptions } from '../../transactions'
  * Custom class must be immutable class which implements toJSON() method
  * with a constructor taking json.
  */
-class ImmutableClassType extends AnyType {
+export class ImmutableClassType extends AnyType {
     type : new ( value? : any ) => {}
 
     create(){
@@ -36,8 +36,6 @@ class ImmutableClassType extends AnyType {
         return a !== b;
     }
 }
-
-Function.prototype._attribute = ImmutableClassType;
 
 /**
  * Optimized attribute of primitive type.
@@ -77,7 +75,7 @@ export class PrimitiveType extends AnyType {
     }
 }
 
-Boolean._attribute = String._attribute = PrimitiveType;
+PrimitiveType.register( Boolean, String );
 
 // Number type with special validation algothim.
 /** @private */ 
@@ -106,8 +104,6 @@ export class NumericType extends PrimitiveType {
     }
 }
 
-Number._attribute = NumericType;
-
 /**
  * Add Number.integer attrubute type
  */
@@ -121,12 +117,12 @@ declare global {
     }
 }
 
-function Integer( x ){
+export function Integer( x ){
     return x ? Math.round( x ) : 0;
 }
-Integer._attribute = NumericType;
-Number.integer = Integer;
 
+NumericType.register( Number, Integer );
+Number.integer = Integer;
 
 if( typeof window !== 'undefined' ){
     window.Integer = Number.integer;
@@ -155,7 +151,7 @@ export class ArrayType extends AnyType {
     }
 }
 
-Array._attribute = ArrayType;
+ArrayType.register( Array );
 
 export class ObjectType extends AnyType {
     create(){ return {}; }
@@ -168,7 +164,7 @@ export class ObjectType extends AnyType {
     }
 }
 
-Object._attribute = ObjectType;
+ObjectType.register( Object );
 
 export function doNothing(){}
 
@@ -191,4 +187,4 @@ export class FunctionType extends AnyType {
     clone( value ){ return value; }
 }
 
-Function._attribute = FunctionType;
+FunctionType.register( Function );

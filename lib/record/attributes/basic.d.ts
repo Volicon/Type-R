@@ -1,6 +1,14 @@
 import { AnyType } from './any';
 import { AttributesContainer } from './updates';
 import { TransactionOptions } from '../../transactions';
+export declare class ImmutableClassType extends AnyType {
+    type: new (value?: any) => {};
+    create(): {};
+    convert(next: any): any;
+    toJSON(value: any): any;
+    clone(value: any): {};
+    isChanged(a: any, b: any): boolean;
+}
 export declare class PrimitiveType extends AnyType {
     type: NumberConstructor | StringConstructor | BooleanConstructor;
     dispose(): void;
@@ -27,6 +35,7 @@ declare global  {
         Integer: Function;
     }
 }
+export declare function Integer(x: any): number;
 export declare class ArrayType extends AnyType {
     toJSON(value: any): any;
     dispose(): void;

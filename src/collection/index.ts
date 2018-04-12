@@ -75,7 +75,7 @@ export class Collection< R extends Record = Record> extends Transactional implem
         Mixable.mixins.populate( RefsCollection );
         
         RefsCollection.prototype = this.prototype;
-        RefsCollection._attribute = CollectionRefsType;
+        CollectionRefsType.register( RefsCollection );
 
         this.Refs = this.Subset = <any>RefsCollection;
 

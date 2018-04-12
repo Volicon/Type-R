@@ -26,3 +26,5 @@ declare global  {
         timestamp: ChainableAttributeSpec;
     }
 }
+export declare const Timestamp: ChainableAttributeSpec;
+export declare const MsDate: ChainableAttributeSpec;
