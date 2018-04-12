@@ -4,7 +4,7 @@
  * Adds type assertions, default validation, and optimized update pipeline.
  */
 
-import { AnyType } from './any'
+import { AttributeType } from './any'
 import { tools } from '../../object-plus'
 import { AttributesContainer } from './updates'
 import { TransactionOptions } from '../../transactions'
@@ -13,7 +13,7 @@ import { TransactionOptions } from '../../transactions'
  * Custom class must be immutable class which implements toJSON() method
  * with a constructor taking json.
  */
-export class ImmutableClassType extends AnyType {
+export class ImmutableClassType extends AttributeType {
     type : new ( value? : any ) => {}
 
     create(){
@@ -42,7 +42,7 @@ export class ImmutableClassType extends AnyType {
  * 
  * Primitives has specialized simplified pipeline.
  */
-export class PrimitiveType extends AnyType {
+export class PrimitiveType extends AttributeType {
     type : NumberConstructor | StringConstructor | BooleanConstructor
 
     dispose(){}
@@ -132,7 +132,7 @@ if( typeof window !== 'undefined' ){
  * Compatibility wrapper for Array type.
  * @private
  */ 
-export class ArrayType extends AnyType {
+export class ArrayType extends AttributeType {
     toJSON( value ) { return value; }
     dispose(){}
     create(){ return []; }
@@ -153,7 +153,7 @@ export class ArrayType extends AnyType {
 
 ArrayType.register( Array );
 
-export class ObjectType extends AnyType {
+export class ObjectType extends AttributeType {
     create(){ return {}; }
 
     convert( next, prev, record ) {
@@ -168,7 +168,7 @@ ObjectType.register( Object );
 
 export function doNothing(){}
 
-export class FunctionType extends AnyType {
+export class FunctionType extends AttributeType {
     // Functions are not serialized.
     toJSON( value ) { return void 0; }
     create(){ return doNothing; }

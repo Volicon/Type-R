@@ -1,7 +1,7 @@
-import { AnyType } from './any';
+import { AttributeType } from './any';
 import { AttributesContainer, ConstructorOptions } from './updates';
 import { Transactional, TransactionOptions } from '../../transactions';
-export declare class SharedType extends AnyType {
+export declare class SharedType extends AttributeType {
     type: typeof Transactional;
     doInit(value: any, record: AttributesContainer, options: ConstructorOptions): any;
     doUpdate(value: any, record: any, options: any, nested: any[]): boolean;

@@ -1310,8 +1310,8 @@ var _metatypes = new Map();
 var notEqual$1 = notEqual;
 var assign$5 = assign;
 var emptyOptions = {};
-var AnyType = (function () {
-    function AnyType(name, a_options) {
+var AttributeType = (function () {
+    function AttributeType(name, a_options) {
         this.name = name;
         this.getHook = null;
         this.options = a_options;
@@ -1352,7 +1352,7 @@ var AnyType = (function () {
         this.transform = transforms.length ? transforms.reduce(chainTransforms) : this.transform;
         this.handleChange = changeHandlers.length ? changeHandlers.reduce(chainChangeHandlers) : this.handleChange;
     }
-    AnyType.register = function () {
+    AttributeType.register = function () {
         var ctors = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             ctors[_i] = arguments[_i];
@@ -1362,38 +1362,37 @@ var AnyType = (function () {
             _metatypes.set(Ctor, this);
         }
     };
-    AnyType.getFor = function (Ctor) {
-        var BaseClass = Ctor;
-        do {
+    AttributeType.getFor = function (Ctor) {
+        for (var BaseClass = Ctor; BaseClass; BaseClass = getBaseClass(BaseClass)) {
             var Attr_1 = _metatypes.get(BaseClass);
             if (Attr_1)
                 return Attr_1;
-        } while (BaseClass = getBaseClass(BaseClass));
-        return AnyType;
+        }
+        return AttributeType;
     };
-    AnyType.create = function (options, name) {
+    AttributeType.create = function (options, name) {
         var AttributeCtor = options._attribute || this.getFor(options.type);
         return new AttributeCtor(name, options);
     };
-    AnyType.prototype.canBeUpdated = function (prev, next, options) { };
-    AnyType.prototype.transform = function (next, prev, model, options) { return next; };
-    AnyType.prototype.convert = function (next, prev, model, options) { return next; };
-    AnyType.prototype.isChanged = function (a, b) {
+    AttributeType.prototype.canBeUpdated = function (prev, next, options) { };
+    AttributeType.prototype.transform = function (next, prev, model, options) { return next; };
+    AttributeType.prototype.convert = function (next, prev, model, options) { return next; };
+    AttributeType.prototype.isChanged = function (a, b) {
         return notEqual$1(a, b);
     };
-    AnyType.prototype.handleChange = function (next, prev, model, options) { };
-    AnyType.prototype.create = function () { return void 0; };
-    AnyType.prototype.clone = function (value, record) {
+    AttributeType.prototype.handleChange = function (next, prev, model, options) { };
+    AttributeType.prototype.create = function () { return void 0; };
+    AttributeType.prototype.clone = function (value, record) {
         return value;
     };
-    AnyType.prototype.dispose = function (record, value) {
+    AttributeType.prototype.dispose = function (record, value) {
         this.handleChange(void 0, value, record, emptyOptions);
     };
-    AnyType.prototype.validate = function (record, value, key) { };
-    AnyType.prototype.toJSON = function (value, key) {
+    AttributeType.prototype.validate = function (record, value, key) { };
+    AttributeType.prototype.toJSON = function (value, key) {
         return value && value.toJSON ? value.toJSON() : value;
     };
-    AnyType.prototype.createPropertyDescriptor = function () {
+    AttributeType.prototype.createPropertyDescriptor = function () {
         var _a = this, name = _a.name, getHook = _a.getHook;
         if (name !== 'id') {
             return {
@@ -1408,13 +1407,13 @@ var AnyType = (function () {
             };
         }
     };
-    AnyType.prototype.initialize = function (name, options) { };
-    AnyType.prototype.doInit = function (value, record, options) {
+    AttributeType.prototype.initialize = function (name, options) { };
+    AttributeType.prototype.doInit = function (value, record, options) {
         var v = value === void 0 ? this.defaultValue() : value, x = this.transform(v, void 0, record, options);
         this.handleChange(x, void 0, record, options);
         return x;
     };
-    AnyType.prototype.doUpdate = function (value, record, options, nested) {
+    AttributeType.prototype.doUpdate = function (value, record, options, nested) {
         var name = this.name, attributes = record.attributes, prev = attributes[name];
         var next = this.transform(value, prev, record, options);
         attributes[name] = next;
@@ -1424,7 +1423,7 @@ var AnyType = (function () {
         }
         return false;
     };
-    AnyType.prototype._log = function (level, text, value, record) {
+    AttributeType.prototype._log = function (level, text, value, record) {
         log(level, "[Attribute Update Error] " + record.getClassName() + "." + this.name + ": " + text, {
             'Record': record,
             'Attribute definition': this,
@@ -1432,10 +1431,10 @@ var AnyType = (function () {
             'New value': value
         });
     };
-    AnyType.prototype.defaultValue = function () {
+    AttributeType.prototype.defaultValue = function () {
         return this.value;
     };
-    return AnyType;
+    return AttributeType;
 }());
 function chainGetHooks(prevHook, nextHook) {
     return function (value, name) {
@@ -1550,7 +1549,7 @@ var AggregatedType = (function (_super) {
         }
     };
     return AggregatedType;
-}(AnyType));
+}(AttributeType));
 
 var assign$6 = assign;
 var ChainableAttributeSpec = (function () {
@@ -1676,7 +1675,7 @@ function emptyFunction() { }
 function type(spec) {
     if (spec instanceof ChainableAttributeSpec)
         return spec;
-    var Type = AnyType.getFor(spec);
+    var Type = AttributeType.getFor(spec);
     return new ChainableAttributeSpec({
         _attribute: Type,
         type: spec,
@@ -1752,7 +1751,7 @@ var DateType = (function (_super) {
     DateType.prototype.clone = function (value) { return value && new Date(value.getTime()); };
     DateType.prototype.dispose = function () { };
     return DateType;
-}(AnyType));
+}(AttributeType));
 DateType.register(Date);
 var msDatePattern = /\/Date\(([0-9]+)\)\//;
 var MSDateType = (function (_super) {
@@ -1848,7 +1847,7 @@ var ImmutableClassType = (function (_super) {
         return a !== b;
     };
     return ImmutableClassType;
-}(AnyType));
+}(AttributeType));
 var PrimitiveType = (function (_super) {
     __extends(PrimitiveType, _super);
     function PrimitiveType() {
@@ -1873,7 +1872,7 @@ var PrimitiveType = (function (_super) {
         }
     };
     return PrimitiveType;
-}(AnyType));
+}(AttributeType));
 PrimitiveType.register(Boolean, String);
 var NumericType = (function (_super) {
     __extends(NumericType, _super);
@@ -1923,7 +1922,7 @@ var ArrayType = (function (_super) {
         return value && value.slice();
     };
     return ArrayType;
-}(AnyType));
+}(AttributeType));
 ArrayType.register(Array);
 var ObjectType = (function (_super) {
     __extends(ObjectType, _super);
@@ -1938,7 +1937,7 @@ var ObjectType = (function (_super) {
         return {};
     };
     return ObjectType;
-}(AnyType));
+}(AttributeType));
 ObjectType.register(Object);
 function doNothing() { }
 var FunctionType = (function (_super) {
@@ -1957,7 +1956,7 @@ var FunctionType = (function (_super) {
     };
     FunctionType.prototype.clone = function (value) { return value; };
     return FunctionType;
-}(AnyType));
+}(AttributeType));
 FunctionType.register(Function);
 
 var on$5 = on$2;
@@ -2055,7 +2054,7 @@ var SharedType = (function (_super) {
         options.changeHandlers.unshift(this._handleChange);
     };
     return SharedType;
-}(AnyType));
+}(AttributeType));
 function ignore() { }
 
 var compile = function (attributesDefinition, baseClassAttributes) {
@@ -2064,7 +2063,7 @@ var compile = function (attributesDefinition, baseClassAttributes) {
     return __assign({}, ConstructorsMixin, { _attributes: new ConstructorsMixin.AttributesCopy(allAttributes), _attributesArray: Object.keys(allAttributes).map(function (key) { return allAttributes[key]; }), properties: transform({}, myAttributes, function (x) { return x.createPropertyDescriptor(); }), _toJSON: createToJSON(allAttributes) }, parseMixin(allAttributes), localEventsMixin(myAttributes), { _endpoints: transform({}, allAttributes, function (attrDef) { return attrDef.options.endpoint; }) });
 };
 function createAttribute(spec, name) {
-    return AnyType.create(ChainableAttributeSpec.from(spec).options, name);
+    return AttributeType.create(ChainableAttributeSpec.from(spec).options, name);
 }
 function parseMixin(attributes) {
     var attrsWithParse = Object.keys(attributes).filter(function (name) { return attributes[name].parse; });
@@ -2438,7 +2437,7 @@ var BaseRecordAttributesCopy = (function () {
     return BaseRecordAttributesCopy;
 }());
 Record.prototype.AttributesCopy = BaseRecordAttributesCopy;
-var IdAttribute = AnyType.create({ value: void 0 }, 'id');
+var IdAttribute = AttributeType.create({ value: void 0 }, 'id');
 Record.prototype._attributes = { id: IdAttribute };
 Record.prototype._attributesArray = [IdAttribute];
 AggregatedType.register(Record);
@@ -3327,7 +3326,7 @@ var RecordRefType = (function (_super) {
     };
     RecordRefType.prototype.validate = function (model, value, name) { };
     return RecordRefType;
-}(AnyType));
+}(AttributeType));
 Record.from = function from(masterCollection) {
     var getMasterCollection = parseReference(masterCollection);
     var typeSpec = new ChainableAttributeSpec({

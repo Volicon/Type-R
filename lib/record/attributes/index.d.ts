@@ -6,7 +6,7 @@ export * from './basic';
 export * from './shared';
 export * from './updates';
 export * from './attrDef';
-import { AnyType } from './any';
+import { AttributeType } from './any';
 import { ConstructorsMixin } from './updates';
 import { IOEndpoint } from '../../io-tools';
 export interface ParseMixin {
@@ -14,7 +14,7 @@ export interface ParseMixin {
 }
 export interface RecordAttributesMixin extends ConstructorsMixin, ParseMixin {
     _attributes: AttributeDescriptors;
-    _attributesArray: AnyType[];
+    _attributesArray: AttributeType[];
     properties: PropertyDescriptorMap;
     _toJSON(): any;
     _localEvents?: eventsApi.EventMap;
@@ -23,8 +23,8 @@ export interface RecordAttributesMixin extends ConstructorsMixin, ParseMixin {
     };
 }
 export interface AttributeDescriptors {
-    [name: string]: AnyType;
+    [name: string]: AttributeType;
 }
 export default function (attributesDefinition: object, baseClassAttributes: AttributeDescriptors): RecordAttributesMixin;
-export declare function createAttribute(spec: any, name: string): AnyType;
-export declare function createSharedTypeSpec(Constructor: Function, Attribute: typeof AnyType): void;
+export declare function createAttribute(spec: any, name: string): AttributeType;
+export declare function createSharedTypeSpec(Constructor: Function, Attribute: typeof AttributeType): void;

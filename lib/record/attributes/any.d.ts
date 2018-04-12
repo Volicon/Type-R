@@ -2,10 +2,10 @@ import { AttributesContainer, AttributeUpdatePipeline, RecordTransaction } from 
 import { tools } from '../../object-plus';
 import { TransactionOptions } from '../../transactions';
 import { IOEndpoint } from '../../io-tools';
-export declare type Transform = (this: AnyType, next: any, prev: any, record: AttributesContainer, options: TransactionOptions) => any;
-export declare type ChangeHandler = (this: AnyType, next: any, prev: any, record: AttributesContainer, options: TransactionOptions) => void;
+export declare type Transform = (this: AttributeType, next: any, prev: any, record: AttributesContainer, options: TransactionOptions) => any;
+export declare type ChangeHandler = (this: AttributeType, next: any, prev: any, record: AttributesContainer, options: TransactionOptions) => void;
 export interface AttributeOptions {
-    _attribute?: typeof AnyType;
+    _attribute?: typeof AttributeType;
     validate?: (record: AttributesContainer, value: any, key: string) => any;
     isRequired?: boolean;
     changeEvents?: boolean;
@@ -25,11 +25,11 @@ export declare type GetHook = (value: any, key: string) => any;
 export declare type AttributeToJSON = (value: any, key: string) => any;
 export declare type AttributeParse = (value: any, key: string) => any;
 export declare type ChangeAttrHandler = ((value: any, attr: string) => void) | string;
-export declare class AnyType implements AttributeUpdatePipeline {
+export declare class AttributeType implements AttributeUpdatePipeline {
     name: string;
     static register(...ctors: Function[]): void;
-    static getFor(Ctor: Function): typeof AnyType;
-    static create(options: AttributeOptions, name: string): AnyType;
+    static getFor(Ctor: Function): typeof AttributeType;
+    static create(options: AttributeOptions, name: string): AttributeType;
     canBeUpdated(prev: any, next: any, options: TransactionOptions): any;
     transform(next: any, prev: any, model: AttributesContainer, options: TransactionOptions): any;
     convert(next: any, prev: any, model: AttributesContainer, options: TransactionOptions): any;

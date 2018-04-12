@@ -1,4 +1,4 @@
-import { AnyType, AttributeOptions } from '../record'
+import { AttributeType, AttributeOptions } from '../record'
 import { parseReference, CollectionReference } from './commons'
 import { Collection } from '../collection'
 import { Record } from '../record'
@@ -18,7 +18,7 @@ import { ChainableAttributeSpec } from '../record'
 type RecordRefValue = Record | string;
 
 /** @private */
-class RecordRefType extends AnyType {
+class RecordRefType extends AttributeType {
     // It is always serialized as an id, whenever it's resolved or not. 
     toJSON( value : RecordRefValue ){
         return value && typeof value === 'object' ? value.id : value;

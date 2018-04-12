@@ -10,7 +10,7 @@ import { ChildrenErrors } from '../validation'
 
 import { Collection } from '../collection'
 
-import { AnyType, AggregatedType, setAttribute, UpdateRecordMixin, 
+import { AttributeType, AggregatedType, setAttribute, UpdateRecordMixin, 
     AttributesValues, AttributesContainer,
     ConstructorsMixin, AttributesConstructor, AttributesCopyConstructor } from './attributes'
 
@@ -209,8 +209,8 @@ export class Record extends Transactional implements IORecord, AttributesContain
      */
 
     // Attributes specifications 
-    _attributes : { [ key : string ] : AnyType }
-    _attributesArray : AnyType[]
+    _attributes : { [ key : string ] : AttributeType }
+    _attributesArray : AttributeType[]
 
     // Attributes object copy constructor
     Attributes : AttributesConstructor
@@ -218,7 +218,7 @@ export class Record extends Transactional implements IORecord, AttributesContain
 
     // forEach function for traversing through attributes, with protective default implementation
     // Overriden by dynamically compiled loop unrolled function in define.ts
-    forEachAttr( attrs : {}, iteratee : ( value : any, key? : string, spec? : AnyType ) => void ) : void {
+    forEachAttr( attrs : {}, iteratee : ( value : any, key? : string, spec? : AttributeType ) => void ) : void {
         const { _attributes } = this;
         let unknown : string[];
 
@@ -484,7 +484,7 @@ class BaseRecordAttributesCopy {
 
 Record.prototype.AttributesCopy = BaseRecordAttributesCopy;
 
-const IdAttribute = AnyType.create({ value : void 0 }, 'id' );
+const IdAttribute = AttributeType.create({ value : void 0 }, 'id' );
 Record.prototype._attributes = { id : IdAttribute };
 Record.prototype._attributesArray = [ IdAttribute ];
 

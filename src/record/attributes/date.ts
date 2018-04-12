@@ -4,7 +4,7 @@
  * Implements validation, cross-browser compatibility fixes, variety of Date serialization formats,
  * and optimized update pipeline.
  */
-import { AnyType } from './any'
+import { AttributeType } from './any'
 import { tools } from '../../object-plus'
 import { AttributesContainer } from './updates'
 import { TransactionOptions } from '../../transactions'
@@ -14,7 +14,7 @@ const DateProto = Date.prototype;
 
 // Date Attribute
 /** @private */
-export class DateType extends AnyType {
+export class DateType extends AttributeType {
     create(){
         return new Date();
     }

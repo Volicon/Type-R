@@ -8,7 +8,7 @@ export * from './shared'
 export * from './updates'
 export * from './attrDef'
 
-import { AnyType } from './any'
+import { AttributeType } from './any'
 import { ConstructorsMixin, constructorsMixin } from './updates'
 import { ChainableAttributeSpec } from './attrDef'
 import { CompiledReference } from '../../traversable'
@@ -21,7 +21,7 @@ export interface ParseMixin {
 export interface RecordAttributesMixin extends ConstructorsMixin, ParseMixin {
     // Attributes descriptors
     _attributes : AttributeDescriptors
-    _attributesArray : AnyType[]
+    _attributesArray : AttributeType[]
     
     // Attribute's property descriptors
     properties : PropertyDescriptorMap
@@ -36,7 +36,7 @@ export interface RecordAttributesMixin extends ConstructorsMixin, ParseMixin {
 }
 
 export interface AttributeDescriptors {
-    [ name : string ] : AnyType
+    [ name : string ] : AttributeType
 }
 
 // Create record mixin from the given record's attributes definition
@@ -59,8 +59,8 @@ export default function( attributesDefinition : object, baseClassAttributes : At
 }
 
 // Create attribute from the type spec.
-export function createAttribute( spec : any, name : string ) : AnyType {
-    return AnyType.create( ChainableAttributeSpec.from( spec ).options, name );
+export function createAttribute( spec : any, name : string ) : AttributeType {
+    return AttributeType.create( ChainableAttributeSpec.from( spec ).options, name );
 }
 
 function parseMixin( attributes : AttributeDescriptors ) : ParseMixin {
@@ -95,7 +95,7 @@ function createToJSON( attributes : AttributeDescriptors ) : () => void {
     `) as any;
 }
 
-export function createSharedTypeSpec( Constructor : Function, Attribute : typeof AnyType ){
+export function createSharedTypeSpec( Constructor : Function, Attribute : typeof AttributeType ){
     if( !Constructor.hasOwnProperty( 'shared' ) ){
         Object.defineProperty( Constructor, 'shared', {
             get(){

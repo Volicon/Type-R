@@ -9,11 +9,11 @@ const _metatypes = new Map();
 
 const { notEqual, assign} = tools;
 
-export type Transform = ( this : AnyType, next : any, prev : any, record : AttributesContainer, options : TransactionOptions ) => any;
-export type ChangeHandler = ( this : AnyType, next : any, prev : any, record : AttributesContainer, options : TransactionOptions ) => void;
+export type Transform = ( this : AttributeType, next : any, prev : any, record : AttributesContainer, options : TransactionOptions ) => any;
+export type ChangeHandler = ( this : AttributeType, next : any, prev : any, record : AttributesContainer, options : TransactionOptions ) => void;
 
 export interface AttributeOptions {
-    _attribute? : typeof AnyType
+    _attribute? : typeof AttributeType
     validate? : ( record : AttributesContainer, value : any, key : string ) => any
     isRequired? : boolean
     changeEvents? : boolean
@@ -46,26 +46,24 @@ const emptyOptions : TransactionOptions = {};
 /**
  * Typeless attribute. Is the base class for all other attributes.
  */
-export class AnyType implements AttributeUpdatePipeline {
+export class AttributeType implements AttributeUpdatePipeline {
     static register( ...ctors : Function[] ){
         for( let Ctor of ctors ){
             _metatypes.set( Ctor, this );
         }
     }
 
-    static getFor( Ctor : Function ) : typeof AnyType {
-        let BaseClass = Ctor;
-        do {
+    static getFor( Ctor : Function ) : typeof AttributeType {
+        for( let BaseClass = Ctor; BaseClass; BaseClass = getBaseClass( BaseClass ) ) {
             const Attr = _metatypes.get( BaseClass );
             if( Attr ) return Attr;
         }
-        while( BaseClass = getBaseClass( BaseClass ) );
 
-        return AnyType;
+        return AttributeType;
     }
 
     // Factory method to create attribute from options 
-    static create( options : AttributeOptions, name : string ) : AnyType {
+    static create( options : AttributeOptions, name : string ) : AttributeType {
         const AttributeCtor = options._attribute || this.getFor( options.type );
 
         return new AttributeCtor( name, options );

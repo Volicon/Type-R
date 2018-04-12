@@ -1,8 +1,8 @@
-import { AnyType } from './any';
+import { AttributeType } from './any';
 import { Transactional, TransactionOptions } from '../../transactions';
 import { AttributesContainer, ConstructorOptions } from './updates';
 import { ValidationError } from '../../validation';
-export declare class AggregatedType extends AnyType {
+export declare class AggregatedType extends AttributeType {
     type: typeof Transactional;
     clone(value: Transactional): Transactional;
     toJSON(x: any): any;

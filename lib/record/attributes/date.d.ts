@@ -1,8 +1,8 @@
-import { AnyType } from './any';
+import { AttributeType } from './any';
 import { AttributesContainer } from './updates';
 import { TransactionOptions } from '../../transactions';
 import { ChainableAttributeSpec } from './attrDef';
-export declare class DateType extends AnyType {
+export declare class DateType extends AttributeType {
     create(): Date;
     convert(next: any, a: any, record: any): any;
     validate(model: any, value: any, name: any): string;

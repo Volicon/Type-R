@@ -3,7 +3,7 @@
  * and returns object with spec.
  */
 import { Transactional } from '../../transactions'
-import { ChangeAttrHandler, AttributeOptions, Parse, AnyType } from './any'
+import { ChangeAttrHandler, AttributeOptions, Parse, AttributeType } from './any'
 import {  AttributesContainer } from './updates'
 import { EventMap, EventsDefinition, definitionDecorator, tools } from '../../object-plus'
 import { IOEndpoint } from '../../io-tools'
@@ -161,7 +161,7 @@ function emptyFunction(){}
 export function type( this : void, spec : ChainableAttributeSpec | Function ) : ChainableAttributeSpec {
     if( spec instanceof ChainableAttributeSpec ) return spec;
 
-    const Type = AnyType.getFor( spec );
+    const Type = AttributeType.getFor( spec );
     return new ChainableAttributeSpec( {
         _attribute : Type,
         type : spec,

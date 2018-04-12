@@ -1,7 +1,7 @@
-import { AnyType } from './any';
+import { AttributeType } from './any';
 import { AttributesContainer } from './updates';
 import { TransactionOptions } from '../../transactions';
-export declare class ImmutableClassType extends AnyType {
+export declare class ImmutableClassType extends AttributeType {
     type: new (value?: any) => {};
     create(): {};
     convert(next: any): any;
@@ -9,7 +9,7 @@ export declare class ImmutableClassType extends AnyType {
     clone(value: any): {};
     isChanged(a: any, b: any): boolean;
 }
-export declare class PrimitiveType extends AnyType {
+export declare class PrimitiveType extends AttributeType {
     type: NumberConstructor | StringConstructor | BooleanConstructor;
     dispose(): void;
     create(): string | number | boolean;
@@ -36,19 +36,19 @@ declare global  {
     }
 }
 export declare function Integer(x: any): number;
-export declare class ArrayType extends AnyType {
+export declare class ArrayType extends AttributeType {
     toJSON(value: any): any;
     dispose(): void;
     create(): any[];
     convert(next: any, prev: any, record: any): any;
     clone(value: any): any;
 }
-export declare class ObjectType extends AnyType {
+export declare class ObjectType extends AttributeType {
     create(): {};
     convert(next: any, prev: any, record: any): any;
 }
 export declare function doNothing(): void;
-export declare class FunctionType extends AnyType {
+export declare class FunctionType extends AttributeType {
     toJSON(value: any): any;
     create(): typeof doNothing;
     dispose(): void;

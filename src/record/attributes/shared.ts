@@ -1,4 +1,4 @@
-import { AnyType } from './any'
+import { AttributeType } from './any'
 import { AttributesContainer, ConstructorOptions } from './updates'
 import { ItemsBehavior, Owner, transactionApi, Transactional, TransactionOptions } from '../../transactions' 
 import { tools, eventsApi } from '../../object-plus'
@@ -17,7 +17,7 @@ const { on, off } = eventsApi,
 const shareAndListen = ItemsBehavior.listen | ItemsBehavior.share;
 
 /** @private */
-export class SharedType extends AnyType {
+export class SharedType extends AttributeType {
     type : typeof Transactional
 
      doInit( value, record : AttributesContainer, options : ConstructorOptions ){

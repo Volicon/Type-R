@@ -2,7 +2,7 @@ import { tools } from '../object-plus';
 import { CloneOptions, Transactional, TransactionalDefinition, Transaction, TransactionOptions, Owner } from '../transactions';
 import { ChildrenErrors } from '../validation';
 import { Collection } from '../collection';
-import { AnyType, AttributesValues, AttributesContainer, AttributesConstructor, AttributesCopyConstructor } from './attributes';
+import { AttributeType, AttributesValues, AttributesContainer, AttributesConstructor, AttributesCopyConstructor } from './attributes';
 import { IORecord } from './io-mixin';
 import { IOPromise, IOEndpoint } from '../io-tools';
 export interface ConstructorOptions extends TransactionOptions {
@@ -43,12 +43,12 @@ export declare class Record extends Transactional implements IORecord, Attribute
     idAttribute: string;
     id: string | number;
     _attributes: {
-        [key: string]: AnyType;
+        [key: string]: AttributeType;
     };
-    _attributesArray: AnyType[];
+    _attributesArray: AttributeType[];
     Attributes: AttributesConstructor;
     AttributesCopy: AttributesCopyConstructor;
-    forEachAttr(attrs: {}, iteratee: (value: any, key?: string, spec?: AnyType) => void): void;
+    forEachAttr(attrs: {}, iteratee: (value: any, key?: string, spec?: AttributeType) => void): void;
     each(iteratee: (value?: any, key?: string) => void, context?: any): void;
     keys(): string[];
     values(): any[];
