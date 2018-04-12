@@ -26,7 +26,24 @@ search: true
 
 # Getting started
 
-Type-R is the modern JS state framework supporting observable changes, state validation, JSON serialization and promised I/O. It's designed to meet the requirements of the complex JS data layer on both front-end and back-end.
+Type-R is the universal state management framework for JavaScript and TypeScript supporting observable changes, validation, JSON serialization, and promised I/O.
+
+```javascript
+import { attributes } from 'type-r'
+
+const Person = attributes({
+    firstName : String,
+    lastName : String
+});
+
+const Book = attributes({
+    title : String,
+    author : Person,
+    releaseDate : Date
+});
+
+const library = new Book.Collection();
+```
 
 Features:
 
@@ -50,18 +67,18 @@ Features:
 
 ![overview](images/overview.png)
 
-Type-R is completely unopinionated on the client-server transport protocol and the view layer technology. It's your perfect M and VM in modern MVVM or MVC architecture.
+Type-R is completely unopinionated on the client-server transport protocol and the view layer technology. It's your perfect M and VM in modern MVVM or MVC architecture on both the client and the server.
 
 ```javascript
-import { define, Record } from 'type-r'
+import { define, type, Record } from 'type-r'
 
 // Define email attribute type with encapsulated validation check.
-const Email = String.has.check( x => x! || x.indexOf( '@' ) >= 0, 'Invalid email' );
+const Email = type( String ).check( x => x! || x.indexOf( '@' ) >= 0, 'Invalid email' );
 
 @define class User extends Record {
     static attributes = {
-        name  : String.isRequired, // should not be empty for the record to be valid.
-        email : Email.isRequired
+        name  : type( String ).isRequired, // should not be empty for the record to be valid.
+        email : type( Email ).isRequired
     }
 }
 

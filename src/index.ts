@@ -32,12 +32,17 @@ import { Record as Model } from './record'
 import { define, Mixable as Class } from './object-plus/'
 export { Model, Class };
 
-export function attributes( attrDefs ) : typeof Model {
+export interface RecordCtor<A extends object> {
+    prototype : Model & { [ attr in keyof A ] : any }
+    new ( attrs? : { [ attr in keyof A ] : any }, options? : object ) : Model & { [ attr in keyof A ] : any }
+}
+
+export function attributes<A extends object>( attrDefs : A ) : RecordCtor<A> {
     @define class DefaultRecord extends Model {
         static attributes = attrDefs;
     }
 
-    return DefaultRecord;
+    return DefaultRecord as any;
 }
 
 import { ChainableAttributeSpec } from './record'
