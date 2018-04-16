@@ -75,6 +75,6 @@
     "underscore": "*"
   },
   "dependencies": {
-    "tslib": "^1.9.0"
+    "tslib": "*"
   }
 }
