@@ -645,6 +645,7 @@ html, body {
 .content {
     position: relative;
     z-index: 30;
+    top: 6em;
     max-width: 900px;
     background-color: #eaf2f6;
 }
