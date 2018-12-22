@@ -1,28 +1,6 @@
 ---
+id: index
 title: Type-R 3.0 API Reference
-
-language_tabs:
-  - javascript
-  - typescript
-
-logoTitle: Type-R 3.0
-
-toc_footers:
-  - <a href="https://github.com/Volicon/Type-R">GitHub repository</a>
-  - <a href="https://github.com/Volicon/Type-R/issues">Report the bug</a>
-  - <a href="https://groups.google.com/forum/#!forum/volicon-open-source">Ask the question</a>
-  - <a href="http://www.volicon.com/">Supported by <img style="vertical-align: middle" src="images/volicon_verizon_dm.png"/></a>
-
-includes:
-  - record
-  - collection
-  - observable
-  - validation
-  - io
-  - tools
-  - releasenotes
-
-search: true
 ---
 
 # Getting started
@@ -33,7 +11,7 @@ Type-R is the TypeScript and JavaScript model framework helping to define and ma
 
 Type-R in unopinionated on the way how an application state should be managed ("single source of truth" or "distributed state"). It can support all approaches equally well being not dependent on singletons and having powerful capabilities for state synchronization.
 
-![overview](images/3-layer-client.png)
+![overview](/img/3-layer-client.png)
 
 A state is defined as a superposition of typed records and collections. A record is a class with a known set of attributes of predefined types possibly holding other records and collections in its attributes, describing the data structure of arbitrary complexity. Record with its attributes forms an aggregation tree with deeply observable attributes changes. Attribute types are checked on assignments and invalid changes are being rejected, therefore it is guaranteed that the application state will preserve the valid shape.
 
