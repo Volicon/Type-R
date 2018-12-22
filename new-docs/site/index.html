@@ -1,0 +1,232 @@
+<!DOCTYPE html><html><head><title>Cuttlebelle - Homepage</title><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/css/site.css"/></head><body><div class="top"><header role="banner"><p>Welcome to Cuttlebelle</p>
+</header><main><h1 id="getting-started">Getting started</h1>
+<h2 id="overview">Overview</h2>
+<p>Type-R is the TypeScript and JavaScript model framework helping to define and manage the complex application state as a combination of reusable parts. Type-R cover the needs of business logic and data layers in 3-tier application architecture, providing the presentation layer with the unified technique to handle the UI and domain state. Type-R data structures look and feel (and, in some aspects, behaves) more like classes in the statically typed languages.</p>
+<p>Type-R in unopinionated on the way how an application state should be managed (&quot;single source of truth&quot; or &quot;distributed state&quot;). It can support all approaches equally well being not dependent on singletons and having powerful capabilities for state synchronization.</p>
+<p><img src="/assets/3-layer-client.png" alt="overview"></p>
+<p>A state is defined as a superposition of typed records and collections. A record is a class with a known set of attributes of predefined types possibly holding other records and collections in its attributes, describing the data structure of arbitrary complexity. Record with its attributes forms an aggregation tree with deeply observable attributes changes. Attribute types are checked on assignments and invalid changes are being rejected, therefore it is guaranteed that the application state will preserve the valid shape.</p>
+<p>Application state defined with Type-R is serializable to JSON by default. Aggregation tree of records and collections is mapped in JSON as a tree of plain objects and arrays. Normalized data represented as a set of collections of records cross-referencing each other are supported as first-class serialization scenario.</p>
+<p>A record may have an associated IOEndpont representing the I/O protocol for CRUD and collection fetch operations which enables the persistence API for the particular record/collection class pair. Some useful endpoints (<code>restfulIO</code>, <code>localStorageIO</code>, etc) are provided by <code>type-r/endpoints/*</code> packages, and developers can define their own I/O endpoints implementing any particular persistence transport or API.</p>
+<p>Record attributes may have custom validation rules attached to them. Validation is being triggered transparently on demand and its result is cached across the record/collection aggregation tree, making subsequent calls to the validation API extremely cheap.</p>
+<p>All aspects of record behavior including serialization and validation can be controlled on attribute level with declarative definitions combining attribute types with metadata. Attribute definitions (&quot;metatypes&quot;) can be reused across different models forming the domain-specific language of model declarations. Some useful attribute metatypes (<code>Email</code>, <code>Url</code>, <code>MicrosoftDate</code>, etc) are provided by <code>type-r/ext-types</code> package.</p>
+<h2 id="how-type-r-compares-to-x-">How Type-R compares to X?</h2>
+<p>Type-R (former &quot;NestedTypes&quot;) project was started in 2014 in Volicon as a modern successor to BackboneJS models, which would match Ember Data in its capabilities to work with a complex state while retaining the BackboneJS simplicity, modularity, and some degree of backward API compatibility. It replaced BackboneJS in the model layer of Volicon products, and it became the key technology in Volicon&#39;s strategy to gradually move from BackboneJS Views to React in the view layer.</p>
+<p><a href="https://guides.emberjs.com/v2.2.0/models/">Ember Data</a> is the closest thing to Type-R by its capabilities, with <a href="http://backbonejs.org/#Model">BackboneJS models and collections</a> being the closest thing by the API, and <a href="https://github.com/mobxjs/mobx">mobx</a> being pretty close in the way how the UI state is managed.</p>
+<p>Type-R, however, takes a very different approach to all of them:</p>
+<ul>
+<li>Type-R models look and feel more like classes in a statically typed language with the majority of features being controlled by attribute metadata.</li>
+<li>Type-R is built around the concept of <em>aggregation trees</em> formed by nested records and collections and it knows how to clone, serialize, and validate complex objects with cross-references properly.</li>
+<li>In contrast to BackboneJS, Record is <em>not an object hash</em> but the class with statically typed and dynamically checked attributes.</li>
+<li>In contrast to mobx, Type-R detects <em>deeply nested changes</em>.</li>
+<li>In contrast to Ember Data, Type-R doesn&#39;t require the singleton global store. In Type-R, stores are a special kind of records and there might be as many dynamically created and disposed of stores as you need, starting with no stores at all.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Type-R</th>
+<th>Backbone Models</th>
+<th>Ember Data</th>
+<th>mobx</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Observable changes in object graph</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>JSON Serialization</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Dynamic Type Safety</td>
+<td>✓</td>
+<td>-</td>
+<td>for serialization only</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Aggregation</td>
+<td>✓</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Relations by id</td>
+<td>✓</td>
+<td>-</td>
+<td>✓</td>
+<td>- </td>
+</tr>
+<tr>
+<td>Generalized I/O</td>
+<td>✓</td>
+<td>sync function</td>
+<td>✓</td>
+<td>- </td>
+</tr>
+</tbody>
+</table>
+<h2 id="features-by-example">Features by example</h2>
+<p>Here&#39;s the brief overview of features groped by application purpose.</p>
+<h3 id="persistent-domain-state">Persistent domain state</h3>
+<p>The basic building block is the <code>Record</code> class. To fetch data from the server, a developer creates the subclass of the <code>Record</code> describing its attribute types and attaches the <code>restfulIO</code> endpoint. It enables the persistence API allowing the developer to fetch the collection from the server. <code>restfulIO</code> expects the server to implement the standard RESTful API expected by BackboneJS models.</p>
+<ul>
+<li><code>GET /api/users</code> - fetch all the users</li>
+<li><code>POST /api/users</code> - create the user</li>
+<li><code>GET /api/users/:id</code> - fetch the user with a given id</li>
+<li><code>PUT /api/users/:id</code> - update the user with a given id</li>
+<li><code>DELETE /api/users/:id</code> - delete the user with a given id</li>
+</ul>
+<p>Record and collection are serializable to and can be parsed from JSON with no additional effort. A mapping to JSON can be customized for collections, records, and individual attributes. The Record validates all updates casting attribute values to declared attribute types to protect the state structure from the protocol incompatibilities and improper assignments.</p>
+<pre><code class="lang-javascript">@define User extends Record {
+    static endpoint = restfulIO( &#39;/api/users&#39; );
+    static attributes = {
+        name : String,
+        email : String,
+        createdAt : Date
+    }
+}
+
+const users = new User.Collection();
+await users.fetch();
+
+expect( users.first().createdAt ).toBeInstanceOf( Date );
+expect( typeof users.toJSON()[ 0 ].createdAt ).toBe( &quot;string&quot; );
+</code></pre>
+<pre><code class="lang-typescript">@define User extends Record {
+    static endpoint = restfulIO( &#39;/api/users&#39; );
+
+    // Type-R can infer attribute types from TypeScript type annotations.
+    @auto name : string
+    @auto email : string
+    @auto createdAt : Date
+}
+
+const users : Collection&lt;User&gt; = new User.Collection();
+await users.fetch();
+
+expect( users.first().createdAt ).toBeInstanceOf( Date );
+expect( typeof users.toJSON()[ 0 ].createdAt ).toBe( &quot;string&quot; );
+</code></pre>
+<h3 id="ui-state-and-observable-changes">UI state and observable changes</h3>
+<p>Type-R provides the universal technique to working with the UI and domain state. To define the UI state, a developer creates the subclass of the <code>Record</code> with attributes holding all the necessary state data possibly along with the persistent data which can become the part of the same local UI state. The UI state itself can be a part of some particular view or UI component, it can be managed as a singleton (&quot;single source of truth&quot;), or both at the same time. Type-R is unopinionated on the application state structure leaving this decision to the developer.</p>
+<p>Records and collections form an aggregation tree with deeply observable changes, so it&#39;s enough to subscribe to the single <code>change</code> event from the <code>UIState</code> to get updates on both data arrival and local changes of the state attributes. Records and collections can be indefinitely nested to describe a state of arbitrary complexity. The developer can attach reactions on changes to the records, their individual attributes, and collections. Additional changes made in reactions will be executed in the scope of the same &quot;change transaction&quot; and won&#39;t trigger additional change events.</p>
+<pre><code class="lang-javascript">@define UIState extends Record {
+    static attributes = {
+        users : User.Collection,
+        selectedUser : memberOf( &#39;users&#39; )
+    }
+}
+
+const uiState = new UIState();
+
+uiState.on( &#39;change&#39;, () =&gt; {
+    console.log( &#39;Something is changed&#39; );
+    updateUI();
+});
+
+uiState.users.fetch();
+</code></pre>
+<pre><code class="lang-typescript">@define UIState extends Record {
+    // For collections and more complex types attribute type must be provided explicitly
+    @type( User.Collection ).as users : Collection&lt;User&gt;
+
+    @memberOf( &#39;users&#39; ).as selectedUser : User
+}
+
+const uiState = new UIState();
+
+uiState.on( &#39;change&#39;, () =&gt; {
+    console.log( &#39;Something is changed&#39; );
+    updateUI();
+});
+
+uiState.users.fetch();
+</code></pre>
+<h3 id="validation">Validation</h3>
+<p>Type-R supports validation as attribute-level checks attached to attribute definitions as metadata. Attribute type together with checks forms an &quot;attribute metatype&quot;, which can be defined separately and reused across multiple record definitions.</p>
+<p>Validation rules are evaluated recursively on the aggregation tree on first access to the validation API, and validations results are cached in records and collections across the tree till the next update. The validation is automatic, subsequent calls to the validation API are cheap, and the developer doesn&#39;t need to manually trigger the validation on data changes.</p>
+<p>The majority of checks in a real application will be a part of attribute &quot;metatypes&quot;, while the custom validation can be also defined on the <code>Record</code> and <code>Collection</code> level to check data integrity and cross-attributes dependencies.</p>
+<pre><code class="lang-javascript">const Email = type( String )
+    .check( x =&gt; !x || x.indexOf( &#39;@&#39; ) &gt;= 0, &quot;Doesn&#39;t look like an email&quot; );
+
+@define User extends Record {
+    static endpoint = restfulIO( &#39;/api/users&#39; );
+    static attributes = {
+        name : type( String ).required,
+        email : type( Email ).required,
+        createdAt : type( Date ).check( x =&gt; x.getTime() &lt;= Date.now() )
+    }
+}
+
+const users = new User.Collection();
+users.add({ email : &#39;john&#39; });
+expect( users.isValid() ).toBe( false );
+expect( users.first().isValid() ).toBe( false );
+
+users.first().name = &quot;John&quot;;
+users.first().email = &quot;john@ny.com&quot;;
+expect( users.isValid() ).toBe( true );
+</code></pre>
+<pre><code class="lang-typescript">const Email = type( String )
+    .check( x =&gt; !x || x.indexOf( &#39;@&#39; ) &gt;= 0, &quot;Doesn&#39;t look like an email&quot; );
+
+@define User extends Record {
+    static endpoint = restfulIO( &#39;/api/users&#39; );
+
+    // @type(...).as converts Type-R attribute type definition to the TypeScript decorator.
+    @type( String ).required.as
+        name : string
+
+    @type( Email ).required.as
+        email : string
+
+    @type( Date ).check( x =&gt; x.getTime() &lt;= Date.now() ).as
+        createdAt : Date
+}
+
+const users = new User.Collection();
+users.add({ email : &#39;john&#39; });
+expect( users.isValid() ).toBe( false );
+expect( users.first().isValid() ).toBe( false );
+
+users.first().name = &quot;John&quot;;
+users.first().email = &quot;john@ny.com&quot;;
+expect( users.isValid() ).toBe( true );
+</code></pre>
+<h2 id="installation-and-requirements">Installation and requirements</h2>
+<p>Is packed as UMD and ES6 module. No peer dependencies are required.</p>
+<p><code>npm install type-r --save-dev</code></p>
+<aside class="success">IE10+, Edge, Safari, Chrome, and Firefox are supported</aside>
+
+<aside class="warning">IE9 and Opera may work but has not been tested. IE8 won&#39;t work.</aside>
+
+<h2 id="reactjs-bindings">ReactJS bindings</h2>
+<p><a href="https://volicon.github.io/React-MVx/">React-MVx</a> is a glue framework which uses Type-R to manage the UI state in React and the <a href="https://github.com/Volicon/NestedLink">NestedLink</a> library to implement two-way data binding. React-MVx provides the complete MVVM solution on top of ReactJS, featuring:</p>
+<ul>
+<li>Type-R <a href="https://volicon.github.io/Type-R/#record">Record</a> to manage the local <a href="https://volicon.github.io/React-MVx/#state">component&#39;s state</a>.</li>
+<li><a href="https://volicon.github.io/React-MVx/#link">two-way data binding</a> for UI and domain state.</li>
+<li>Hassle-free form validation (due to the combination of features of Type-R and NestedLink).</li>
+<li><a href="https://volicon.github.io/Type-R/#definition">Type-R type annotation</a> used to define component <a href="https://volicon.github.io/React-MVx/#props">props</a> and <a href="https://volicon.github.io/React-MVx/#context">context</a>.</li>
+</ul>
+<h2 id="usage-with-nodejs">Usage with NodeJS</h2>
+<p>Type-R can be used at the server side to build the business logic layer by defining the custom I/O endpoints to store data in a database. Type-R dynamic type safety features are particularly advantageous when schema-less JSON databases (like Couchbase) are being used.</p>
+<p><img src="/assets/3-layer-server.png" alt="server"></p>
+</main></div><footer><p>Read more about it in the <a href="https://cuttlebelle.com">docs</a></p>
+</footer></body></html>
