@@ -1,0 +1,26 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es5",
+    "lib" : [ "es2015", "dom" ],
+    "module":"commonjs",
+    "declaration": true,
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "./lib",
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "removeComments":true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths" : {
+      "type-r/tools":["../tools"],
+      "type-r/mixins":["../mixins"],
+      "type-r/events":["../events"],
+      "type-r/logs":["../logs"],
+      "type-r/ext-types":["../ext-types"],
+      "type-r/globals":["../globals"]
+    }
+  }
+}

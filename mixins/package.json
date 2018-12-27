@@ -1,0 +1,11 @@
+{
+    "name": "tr-mixins",
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
+    "scripts": {
+        "build":"../node_modules/.bin/tsc"
+    },
+    "author": "Vlad Balin",
+    "license": "MIT"
+}
+  
