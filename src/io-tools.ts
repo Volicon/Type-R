@@ -1,29 +1,67 @@
+import { callbackify } from 'util';
+
 export interface IONode {
     _endpoint : IOEndpoint
     _ioPromise : IOPromise< this >
 }
 
-export interface IOPromise<T> extends Promise<T> {
-    abort? : () => void
-}
-
-export interface IOEndpoint {
-    list( options : IOOptions, collection? ) : IOPromise<any>
-    create( json : any, options : IOOptions, record? ) : IOPromise<any>
-    update( id : string | number, json :any, options : IOOptions, record? ) : IOPromise<any>
-    read( id : string | number, options : IOOptions, record? ) : IOPromise<any>
-    destroy( id : string | number, options : IOOptions, record? ) : IOPromise<any>
-    subscribe( events : IOEvents, collection? ) : IOPromise<any>
-    unsubscribe( events : IOEvents, collection? ) : void
-}
+/**
+ * JSON data service.
+ */
 
 export interface IOOptions {
     ioUpdate? : boolean
 }
 
+export interface CollectionFetchOptions extends IOOptions {
+    filter? : string
+    params? : object
+}
+
+/**
+ * IOEndpoint is the JSON persistent service.
+ */
+export interface IOEndpoint {
+    // List collection models.
+    list?( options? : CollectionFetchOptions, collection? : any ) : Promise<any>
+
+    // Custom collection methods.
+    collection? : {
+        [ method : string ] : ( ...args : any[] ) => Promise<any>
+    }
+
+    // CRUD model methods.
+    create?( json : any, options? : IOOptions, record? : any ) : Promise<any>
+    update?( id : string, json : any, options? : IOOptions, record? : any ) : Promise<any>
+    read?( id : string, options? : IOOptions, record? : any ) : Promise<any>
+    destroy?( id : string, options? : IOOptions, record? : any ) : Promise<any>
+
+    // Custom model methods.
+    model? : {
+        [ method : string ] : ( id : string, ...args : any[] ) => Promise<any>
+    }
+
+    // Events
+    on?( events : IOEvents, listener? : any ) : Promise<this>
+    off?( events : IOEvents, listener? : any ) : this
+}
+
+export interface PersistentCollection {
+    liveUpdates( value? : boolean ) : boolean
+    fetch( options? : CollectionFetchOptions ) : Promise<this>
+    endpointCall( name : string, ...args : any[] ) : Promise<any>
+}
+
+export interface PersistentModel {
+    fetch( options? : IOOptions ) : Promise<this>
+    save( options? : IOOptions ) : Promise<this>
+    destroy( options? : IOOptions ) : Promise<this>
+    endpointCall( name : string, ...args : any[] ) : Promise<any>
+}
+
 export interface IOEvents {
-    updated? : ( json : any ) => void
-    removed? : ( json : any ) => void
+    updated?( json : any ) : void
+    removed?( id : string ) : void
 }
 
 export function getOwnerEndpoint( self ) : IOEndpoint {
@@ -46,30 +84,29 @@ export function getOwnerEndpoint( self ) : IOEndpoint {
  * initialize() function takes third optional argument `abort : ( resolve, reject ) => void`,
  * which can be used to add custom abort handling.
  */
-declare var Promise: PromiseConstructorLike;
+export class IOPromise<T> extends Promise<T> {
+    constructor(
+        initialize : (
+            resolve : ( x : T ) => void,
+            reject? : ( x : any ) => void,
+            onAbort? : ( abort : () => void ) => void
+        ) => void
+    ){
+        let abort : () => void;
 
-export function createIOPromise( initialize : InitIOPromise ) : IOPromise<any>{
-    let resolve, reject, onAbort;
+        super(( resolve, reject ) =>{
+            initialize( resolve, reject, fn => abort = fn );
 
-    function abort( fn ){
-        onAbort = fn;
+            abort || ( abort = () => reject( new Error( "I/O aborted" ) ));
+        });
+
+        this.abort = abort;
     }
 
-    const promise : IOPromise<any> = new Promise( ( a_resolve, a_reject ) =>{
-        reject = a_reject;
-        resolve = a_resolve;
-        initialize( resolve, reject, abort );
-    }) as IOPromise<any>;
-
-    promise.abort = () => {
-        onAbort ? onAbort( resolve, reject ) : reject( new Error( "I/O Aborted" ) );
-    }
-
-    return promise;
+    abort(){}
 }
 
-export type InitIOPromise = ( resolve : ( x? : any ) => void, reject : ( x? : any ) => void, abort? : ( fn : Function ) => void ) => void;
-
+//TODO: rejection mechanic without abort??
 export function startIO( self : IONode, promise : IOPromise<any>, options : IOOptions, thenDo : ( json : any ) => any ) : IOPromise<any> {
     // Stop pending I/O first...
     abortIO( self );
