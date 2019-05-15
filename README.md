@@ -58,7 +58,7 @@ msg.transaction( () => { // Prepare to make the sequence of changes on msg
 }); // Got single 'change!!!' message in the console.
 ```
 
-## [Documentation](https://volicon.github.io/Type-R/)
+## [Documentation](https://volijs.github.io/Type-R/)
 
 ## Installation and requirements
 
