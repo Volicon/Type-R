@@ -15,6 +15,8 @@ export type InferAttrs<A extends object> = {
     [K in keyof A]: Infer<A[K]>
 };
 
+export type AttributesMixin<M extends { attributes : object }> = InferAttrs<M['attributes']>
+
 export interface RecordConstructor<A> extends TheType<typeof Record> {
     new ( attrs? : Partial<A>, options? : object ) : Record & A
     prototype : Record
