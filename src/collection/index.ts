@@ -7,7 +7,6 @@ import { CollectionCore, CollectionTransaction, Elements, free, sortElements, up
 import { removeMany, removeOne } from './remove';
 import { emptySetTransaction, setTransaction } from './set';
 
-
 const { trigger2 } = eventsApi,
     { begin, commit, markAsDirty } = transactionApi;
 

@@ -283,6 +283,23 @@ describe( 'Bugs from Volicon Observer', () =>{
 
             const c2 = Collection.of( MyModel ).create();
             x = c2.first();
+        });
+
+        it('short syntax for model definitions', () => {
+
+            const A = Model.extendAttrs({
+                hi : ''
+            });
+            
+            const x = new A.Collection();
+
+            const B = A.extendAttrs({
+                there : 4
+            });
+
+            const y = new B.Collection();
+
+            let z : InstanceType<typeof B> = y.first();
         })
     });
 } );
