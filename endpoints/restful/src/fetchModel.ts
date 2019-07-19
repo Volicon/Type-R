@@ -35,7 +35,7 @@ function notSupported( method ){
 
     async read( id, options : RestfulIOOptions, model : Model ){
         if( this.memoryIO ){
-            return this.memoryIO.list( options )[ 0 ];
+            return ( await this.memoryIO.list( options ) )[ 0 ];
         }
         else{
             this.url = this.constructUrl( options.params, model );

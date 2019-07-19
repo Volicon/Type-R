@@ -44,14 +44,15 @@ var ModelFetchEndpoint = (function (_super) {
     ModelFetchEndpoint.prototype.read = function (id, options, model) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
-                if (this.memoryIO) {
-                    return [2, this.memoryIO.list(options)[0]];
+                switch (_a.label) {
+                    case 0:
+                        if (!this.memoryIO) return [3, 2];
+                        return [4, this.memoryIO.list(options)];
+                    case 1: return [2, (_a.sent())[0]];
+                    case 2:
+                        this.url = this.constructUrl(options.params, model);
+                        return [2, this.request(this.method, this.getRootUrl(model), options)];
                 }
-                else {
-                    this.url = this.constructUrl(options.params, model);
-                    return [2, this.request(this.method, this.getRootUrl(model), options)];
-                }
-                return [2];
             });
         });
     };
