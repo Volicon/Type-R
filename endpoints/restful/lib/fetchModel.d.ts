@@ -1,6 +1,5 @@
 import { Model } from 'type-r';
-import { RestfulFetchOptions, RestfulEndpoint, RestfulIOOptions } from './restful';
-export declare type HttpMethod = 'GET' | 'POST' | 'UPDATE' | 'DELETE';
+import { RestfulFetchOptions, RestfulEndpoint, RestfulIOOptions, HttpMethod } from './restful';
 export declare type ConstructUrl = (params: {
     [key: string]: any;
 }, model?: Model) => string;
@@ -8,7 +7,7 @@ export declare function fetchModelIO(method: HttpMethod, url: ConstructUrl, opti
 declare class ModelFetchEndpoint extends RestfulEndpoint {
     method: HttpMethod;
     constructUrl: ConstructUrl;
-    constructor(method: HttpMethod, constructUrl: ConstructUrl, options?: RestfulFetchOptions);
+    constructor(method: HttpMethod, constructUrl: ConstructUrl, { mockData, ...options }?: RestfulFetchOptions);
     list(): Promise<void>;
     destroy(): Promise<void>;
     create(): Promise<void>;

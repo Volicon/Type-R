@@ -1,27 +1,41 @@
 import * as tslib_1 from "tslib";
+import { memoryIO } from '../../memory';
 export function create(url, fetchOptions) {
     return new RestfulEndpoint(url, fetchOptions);
 }
 export { create as restfulIO };
 var RestfulEndpoint = (function () {
-    function RestfulEndpoint(url, fetchOptions) {
+    function RestfulEndpoint(url, _a) {
+        if (_a === void 0) { _a = {}; }
+        var mockData = _a.mockData, _b = _a.simulateDelay, simulateDelay = _b === void 0 ? 1000 : _b, fetchOptions = tslib_1.__rest(_a, ["mockData", "simulateDelay"]);
         this.url = url;
         this.fetchOptions = fetchOptions;
+        this.memoryIO = mockData ? memoryIO(mockData, simulateDelay) : null;
     }
     RestfulEndpoint.prototype.create = function (json, options, record) {
-        return this.request('POST', this.collectionUrl(record, options), options, json);
+        return this.memoryIO ?
+            this.memoryIO.create.apply(this.memoryIO, arguments) :
+            this.request('POST', this.collectionUrl(record, options), options, json);
     };
     RestfulEndpoint.prototype.update = function (id, json, options, record) {
-        return this.request('PUT', this.objectUrl(record, id, options), options, json);
+        return this.memoryIO ?
+            this.memoryIO.update.apply(this.memoryIO, arguments) :
+            this.request('PUT', this.objectUrl(record, id, options), options, json);
     };
     RestfulEndpoint.prototype.read = function (id, options, record) {
-        return this.request('GET', this.objectUrl(record, id, options), options);
+        return this.memoryIO ?
+            this.memoryIO.read.apply(this.memoryIO, arguments) :
+            this.request('GET', this.objectUrl(record, id, options), options);
     };
     RestfulEndpoint.prototype.destroy = function (id, options, record) {
-        return this.request('DELETE', this.objectUrl(record, id, options), options);
+        return this.memoryIO ?
+            this.memoryIO.destroy.apply(this.memoryIO, arguments) :
+            this.request('DELETE', this.objectUrl(record, id, options), options);
     };
     RestfulEndpoint.prototype.list = function (options, collection) {
-        return this.request('GET', this.collectionUrl(collection, options), options);
+        return this.memoryIO ?
+            this.memoryIO.list.apply(this.memoryIO, arguments) :
+            this.request('GET', this.collectionUrl(collection, options), options);
     };
     RestfulEndpoint.prototype.subscribe = function (events) { };
     RestfulEndpoint.prototype.unsubscribe = function (events) { };

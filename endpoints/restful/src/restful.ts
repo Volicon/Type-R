@@ -1,10 +1,13 @@
 import { IOEndpoint, IOOptions, IOPromise, createIOPromise } from 'type-r'
+import { memoryIO, MemoryEndpoint } from '../../memory'
 
 export function create( url : string, fetchOptions? : Partial<RestfulFetchOptions> ){
     return new RestfulEndpoint( url, fetchOptions );
 }
 
 export { create as restfulIO }
+
+export type HttpMethod = 'GET' | 'POST' | 'UPDATE' | 'DELETE' | 'PUT'
 
 export interface RestfulIOOptions extends IOOptions {
     params? : object,
@@ -17,12 +20,18 @@ export type RestfulFetchOptions = /* subset of RequestInit */{
     mode?: RequestMode;
     redirect?: RequestRedirect;
     referrerPolicy?: ReferrerPolicy;
+    mockData? : any
+    simulateDelay? : number 
 }
 
 export class RestfulEndpoint implements IOEndpoint {
-
-    constructor( public url : string, public fetchOptions? : Partial<RestfulFetchOptions> ) {
+    constructor( public url : string, { mockData, simulateDelay = 1000, ...fetchOptions } : RestfulFetchOptions = {}) {
+        this.fetchOptions = fetchOptions
+        this.memoryIO =  mockData ? memoryIO( mockData, simulateDelay ) : null;
     }
+
+    fetchOptions : RestfulFetchOptions
+    memoryIO : MemoryEndpoint
 
     public static defaultFetchOptions : RestfulFetchOptions = {
         cache: "no-cache",
@@ -32,23 +41,33 @@ export class RestfulEndpoint implements IOEndpoint {
     }
 
     create( json, options : RestfulIOOptions, record ) {
-        return this.request( 'POST', this.collectionUrl( record, options ), options, json );
+        return this.memoryIO ?
+            this.memoryIO.create.apply( this.memoryIO, arguments ) :
+            this.request( 'POST', this.collectionUrl( record, options ), options, json );
     }
 
     update( id, json, options : RestfulIOOptions, record ) {
-        return this.request( 'PUT', this.objectUrl( record, id, options ), options, json );
+        return this.memoryIO ?
+            this.memoryIO.update.apply( this.memoryIO, arguments ) :
+            this.request( 'PUT', this.objectUrl( record, id, options ), options, json );
     }
 
     read( id, options : IOOptions, record ){
-        return this.request( 'GET', this.objectUrl( record, id, options ), options );
-    }
+        return this.memoryIO ?
+            this.memoryIO.read.apply( this.memoryIO, arguments ) :
+            this.request( 'GET', this.objectUrl( record, id, options ), options );
+        }
 
     destroy( id, options : RestfulIOOptions, record ){
-        return this.request( 'DELETE', this.objectUrl( record, id, options ), options );
+        return this.memoryIO ?
+            this.memoryIO.destroy.apply( this.memoryIO, arguments ) :
+            this.request( 'DELETE', this.objectUrl( record, id, options ), options );
     }
 
     list( options : RestfulIOOptions, collection ) {
-        return this.request( 'GET', this.collectionUrl( collection, options ), options );
+        return this.memoryIO ?
+            this.memoryIO.list.apply( this.memoryIO, arguments ) :
+            this.request( 'GET', this.collectionUrl( collection, options ), options );
     }
 
     subscribe( events ) : any {}
@@ -114,7 +133,7 @@ export class RestfulEndpoint implements IOEndpoint {
         return resultOptions;
     }
 
-    protected request( method : string, url : string, {options} : RestfulIOOptions, body? ) : Promise<any> {
+    protected request( method : HttpMethod, url : string, {options} : RestfulIOOptions, body? ) : Promise<any> {
 
         return fetch( url, this.buildRequestOptions( method, options, body ) )
             .then( response => {

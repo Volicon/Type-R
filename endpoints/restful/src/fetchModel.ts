@@ -1,7 +1,6 @@
 import { Model, define } from 'type-r';
-import { RestfulFetchOptions, RestfulEndpoint, RestfulIOOptions } from './restful';
+import { RestfulFetchOptions, RestfulEndpoint, RestfulIOOptions, HttpMethod } from './restful';
 
-export type HttpMethod = 'GET' | 'POST' | 'UPDATE' | 'DELETE'
 export type ConstructUrl = ( params : { [ key : string ] : any }, model? : Model ) => string;
 
 /**
@@ -24,9 +23,9 @@ function notSupported( method ){
     constructor(
         public method : HttpMethod,
         public constructUrl : ConstructUrl,
-        options? : RestfulFetchOptions 
+        { mockData, ...options } : RestfulFetchOptions = {}
     ){
-        super( '', options );
+        super( '', mockData ? { mockData : [ mockData ], ...options } : options );
     }
 
     async list(){ notSupported( 'collection.fetch()') }
@@ -35,7 +34,12 @@ function notSupported( method ){
     async update(){ notSupported( 'model.save()') }
 
     async read( id, options : RestfulIOOptions, model : Model ){
-        this.url = this.constructUrl( options.params, model );
-        return this.request( this.method, this.getRootUrl( model ), options );
+        if( this.memoryIO ){
+            return this.memoryIO.list( options )[ 0 ];
+        }
+        else{
+            this.url = this.constructUrl( options.params, model );
+            return this.request( this.method, this.getRootUrl( model ), options );    
+        }
     }
 }

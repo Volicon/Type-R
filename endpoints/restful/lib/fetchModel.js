@@ -9,8 +9,10 @@ function notSupported(method) {
 }
 var ModelFetchEndpoint = (function (_super) {
     tslib_1.__extends(ModelFetchEndpoint, _super);
-    function ModelFetchEndpoint(method, constructUrl, options) {
-        var _this = _super.call(this, '', options) || this;
+    function ModelFetchEndpoint(method, constructUrl, _a) {
+        if (_a === void 0) { _a = {}; }
+        var mockData = _a.mockData, options = tslib_1.__rest(_a, ["mockData"]);
+        var _this = _super.call(this, '', mockData ? tslib_1.__assign({ mockData: [mockData] }, options) : options) || this;
         _this.method = method;
         _this.constructUrl = constructUrl;
         return _this;
@@ -42,8 +44,14 @@ var ModelFetchEndpoint = (function (_super) {
     ModelFetchEndpoint.prototype.read = function (id, options, model) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             return tslib_1.__generator(this, function (_a) {
-                this.url = this.constructUrl(options.params, model);
-                return [2, this.request(this.method, this.getRootUrl(model), options)];
+                if (this.memoryIO) {
+                    return [2, this.memoryIO.list(options)[0]];
+                }
+                else {
+                    this.url = this.constructUrl(options.params, model);
+                    return [2, this.request(this.method, this.getRootUrl(model), options)];
+                }
+                return [2];
             });
         });
     };
