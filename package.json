@@ -1,6 +1,6 @@
 {
   "name": "type-r",
-  "version": "3.0.12",
+  "version": "3.0.13",
   "description": "Serializable, validated, and observable data layer for modern JS applications",
   "main": "./dist/index.js",
   "jsnext:main": "./lib/index.js",
