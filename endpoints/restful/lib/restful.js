@@ -1,4 +1,5 @@
 import * as tslib_1 from "tslib";
+import { log, isProduction } from 'type-r';
 import { memoryIO } from '../../memory';
 export function create(url, fetchOptions) {
     return new RestfulEndpoint(url, fetchOptions);
@@ -13,32 +14,45 @@ var RestfulEndpoint = (function () {
         this.memoryIO = mockData ? memoryIO(mockData, simulateDelay) : null;
     }
     RestfulEndpoint.prototype.create = function (json, options, record) {
+        var url = this.collectionUrl(record, options);
         return this.memoryIO ?
-            this.memoryIO.create.apply(this.memoryIO, arguments) :
-            this.request('POST', this.collectionUrl(record, options), options, json);
+            this.simulateIO('create', 'POST', url, arguments) :
+            this.request('POST', url, options, json);
     };
     RestfulEndpoint.prototype.update = function (id, json, options, record) {
+        var url = this.objectUrl(record, id, options);
         return this.memoryIO ?
-            this.memoryIO.update.apply(this.memoryIO, arguments) :
-            this.request('PUT', this.objectUrl(record, id, options), options, json);
+            this.simulateIO('update', 'PUT', url, arguments) :
+            this.request('PUT', url, options, json);
     };
     RestfulEndpoint.prototype.read = function (id, options, record) {
+        var url = this.objectUrl(record, id, options);
         return this.memoryIO ?
-            this.memoryIO.read.apply(this.memoryIO, arguments) :
-            this.request('GET', this.objectUrl(record, id, options), options);
+            this.simulateIO('read', 'GET', url, arguments) :
+            this.request('GET', url, options);
     };
     RestfulEndpoint.prototype.destroy = function (id, options, record) {
+        var url = this.objectUrl(record, id, options);
         return this.memoryIO ?
-            this.memoryIO.destroy.apply(this.memoryIO, arguments) :
-            this.request('DELETE', this.objectUrl(record, id, options), options);
+            this.simulateIO('destroy', 'DELETE', url, arguments) :
+            this.request('DELETE', url, options);
     };
     RestfulEndpoint.prototype.list = function (options, collection) {
+        var url = this.collectionUrl(collection, options);
         return this.memoryIO ?
-            this.memoryIO.list.apply(this.memoryIO, arguments) :
-            this.request('GET', this.collectionUrl(collection, options), options);
+            this.simulateIO('list', 'GET', url, arguments) :
+            this.request('GET', url, options);
     };
     RestfulEndpoint.prototype.subscribe = function (events) { };
     RestfulEndpoint.prototype.unsubscribe = function (events) { };
+    RestfulEndpoint.prototype.simulateIO = function (method, httpMethod, url, args) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                log(isProduction ? "error" : "info", 'Type-R:SimulatedIO', httpMethod + " " + url);
+                return [2, this.memoryIO[method].apply(this.memoryIO, args)];
+            });
+        });
+    };
     RestfulEndpoint.prototype.isRelativeUrl = function (url) {
         return url.indexOf('./') === 0;
     };
@@ -104,5 +118,8 @@ function appendParams(url, params) {
             .map(function (k) { return esc(k) + '=' + esc(params[k]); })
             .join('&')
         : url;
+}
+function simulateIO() {
+    log("info", 'SimulatedIO', "GET " + this.url);
 }
 //# sourceMappingURL=restful.js.map

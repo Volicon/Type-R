@@ -1,4 +1,4 @@
-import { Model, define } from 'type-r';
+import { Model, define, log, isProduction } from 'type-r';
 import { RestfulFetchOptions, RestfulEndpoint, RestfulIOOptions, HttpMethod } from './restful';
 
 export type ConstructUrl = ( params : { [ key : string ] : any }, model? : Model ) => string;
@@ -34,11 +34,13 @@ function notSupported( method ){
     async update(){ notSupported( 'model.save()') }
 
     async read( id, options : RestfulIOOptions, model : Model ){
+        this.url = this.constructUrl( options.params, model );
+
         if( this.memoryIO ){
+            log( isProduction ? "error" : "info", 'Type-R:SimulatedIO', `GET ${this.url}`);
             return ( await this.memoryIO.list( options ) )[ 0 ];
         }
         else{
-            this.url = this.constructUrl( options.params, model );
             return this.request( this.method, this.getRootUrl( model ), options );    
         }
     }

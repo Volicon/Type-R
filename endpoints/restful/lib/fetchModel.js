@@ -1,5 +1,5 @@
 import * as tslib_1 from "tslib";
-import { define } from 'type-r';
+import { define, log, isProduction } from 'type-r';
 import { RestfulEndpoint } from './restful';
 export function fetchModelIO(method, url, options) {
     return new ModelFetchEndpoint(method, url, options);
@@ -46,12 +46,12 @@ var ModelFetchEndpoint = (function (_super) {
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        this.url = this.constructUrl(options.params, model);
                         if (!this.memoryIO) return [3, 2];
+                        log(isProduction ? "error" : "info", 'Type-R:SimulatedIO', "GET " + this.url);
                         return [4, this.memoryIO.list(options)];
                     case 1: return [2, (_a.sent())[0]];
-                    case 2:
-                        this.url = this.constructUrl(options.params, model);
-                        return [2, this.request(this.method, this.getRootUrl(model), options)];
+                    case 2: return [2, this.request(this.method, this.getRootUrl(model), options)];
                 }
             });
         });

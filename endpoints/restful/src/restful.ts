@@ -1,4 +1,4 @@
-import { IOEndpoint, IOOptions, IOPromise, createIOPromise } from 'type-r'
+import { IOEndpoint, IOOptions, log, isProduction } from 'type-r'
 import { memoryIO, MemoryEndpoint } from '../../memory'
 
 export function create( url : string, fetchOptions? : Partial<RestfulFetchOptions> ){
@@ -41,38 +41,47 @@ export class RestfulEndpoint implements IOEndpoint {
     }
 
     create( json, options : RestfulIOOptions, record ) {
+        const url = this.collectionUrl( record, options );
         return this.memoryIO ?
-            this.memoryIO.create.apply( this.memoryIO, arguments ) :
-            this.request( 'POST', this.collectionUrl( record, options ), options, json );
+            this.simulateIO( 'create', 'POST', url, arguments ) :
+            this.request( 'POST', url, options, json );
     }
 
     update( id, json, options : RestfulIOOptions, record ) {
+        const url = this.objectUrl( record, id, options )
         return this.memoryIO ?
-            this.memoryIO.update.apply( this.memoryIO, arguments ) :
-            this.request( 'PUT', this.objectUrl( record, id, options ), options, json );
+            this.simulateIO( 'update', 'PUT', url, arguments ) :
+            this.request( 'PUT', url, options, json );
     }
 
     read( id, options : IOOptions, record ){
+        const url = this.objectUrl( record, id, options );
         return this.memoryIO ?
-            this.memoryIO.read.apply( this.memoryIO, arguments ) :
-            this.request( 'GET', this.objectUrl( record, id, options ), options );
+            this.simulateIO( 'read', 'GET', url, arguments ) :
+            this.request( 'GET', url, options );
         }
 
     destroy( id, options : RestfulIOOptions, record ){
+        const url = this.objectUrl( record, id, options );
         return this.memoryIO ?
-            this.memoryIO.destroy.apply( this.memoryIO, arguments ) :
-            this.request( 'DELETE', this.objectUrl( record, id, options ), options );
+            this.simulateIO( 'destroy', 'DELETE', url, arguments ) :
+            this.request( 'DELETE', url, options );
     }
 
     list( options : RestfulIOOptions, collection ) {
+        const url = this.collectionUrl( collection, options );
         return this.memoryIO ?
-            this.memoryIO.list.apply( this.memoryIO, arguments ) :
-            this.request( 'GET', this.collectionUrl( collection, options ), options );
+            this.simulateIO( 'list', 'GET', url, arguments ) :
+            this.request( 'GET', url , options );
     }
 
     subscribe( events ) : any {}
     unsubscribe( events ) : any {}
 
+    async simulateIO( method : string, httpMethod : string, url : string, args ){
+        log( isProduction ? "error" : "info", 'Type-R:SimulatedIO', `${httpMethod} ${url}`);
+        return this.memoryIO[ method ].apply( this.memoryIO, args );
+    }
 
     protected isRelativeUrl( url ) {
         return url.indexOf( './' ) === 0;
@@ -134,7 +143,7 @@ export class RestfulEndpoint implements IOEndpoint {
     }
 
     protected request( method : HttpMethod, url : string, {options} : RestfulIOOptions, body? ) : Promise<any> {
-
+        
         return fetch( url, this.buildRequestOptions( method, options, body ) )
             .then( response => {
                 if( response.ok ) {
@@ -156,3 +165,7 @@ function appendParams( url, params? ) {
 }
 
 
+function simulateIO(){
+    log( "info", 'SimulatedIO', `GET ${this.url}`);
+
+}
