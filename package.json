@@ -1,7 +1,7 @@
 {
     "private": true,
     "workspaces" : [
-        "models", "globals", "ext-types", "endpoints", "docs"
+        "models", "ext-types", "globals", "endpoints", "tests", "docs"
     ],
 
     "scripts" : {
