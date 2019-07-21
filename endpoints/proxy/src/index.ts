@@ -1,4 +1,4 @@
-import { IOEndpoint, Record } from 'type-r';
+import { IOEndpoint, Record } from '@type-r/models';
 
 const parseOptions = { parse : true, strict : true };
 

@@ -1,7 +1,8 @@
 {
     "private" : true,
     "dependencies": {
-        "@type-r/models" : "^4.0.0"
+        "@type-r/models" : "^4.0.0",
+        "isomorphic-fetch": "*"
     },
     "scripts": {
         "test:backbone": "qunit 'backbone-regression/*.tst.js'",

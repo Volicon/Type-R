@@ -1,4 +1,4 @@
-import { IOEndpoint, IOOptions, IOPromise } from 'type-r';
+import { IOEndpoint, IOOptions, IOPromise } from '@type-r/models';
 export declare type Index = number[];
 export declare function create(key: string): LocalStorageEndpoint;
 export { create as localStorageIO };

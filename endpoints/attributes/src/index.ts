@@ -1,4 +1,4 @@
-import { IOEndpoint, IOOptions, IOPromise } from 'type-r'
+import { IOEndpoint, IOOptions, IOPromise } from '@type-r/models'
 
 export function create(){
     return new AttributesEndpoint();

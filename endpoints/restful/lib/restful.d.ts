@@ -1,4 +1,4 @@
-import { IOEndpoint, IOOptions } from 'type-r';
+import { IOEndpoint, IOOptions } from '@type-r/models';
 import { MemoryEndpoint } from '../../memory';
 export declare function create(url: string, fetchOptions?: Partial<RestfulFetchOptions>): RestfulEndpoint;
 export { create as restfulIO };

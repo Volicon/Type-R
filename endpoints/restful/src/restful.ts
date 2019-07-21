@@ -1,4 +1,4 @@
-import { IOEndpoint, IOOptions, log, isProduction } from 'type-r'
+import { IOEndpoint, IOOptions, log, isProduction } from '@type-r/models'
 import { memoryIO, MemoryEndpoint } from '../../memory'
 
 export function create( url : string, fetchOptions? : Partial<RestfulFetchOptions> ){

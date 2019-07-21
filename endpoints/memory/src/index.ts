@@ -1,4 +1,4 @@
-import { IOEndpoint, IOPromise, createIOPromise } from 'type-r'
+import { IOEndpoint, IOPromise, createIOPromise } from '@type-r/models'
 
 export type Index = ( number | string )[];
 

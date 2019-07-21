@@ -8,6 +8,10 @@
         "build":"../../node_modules/.bin/tsc && ../../node_modules/.bin/rollup --config"
     },
     "author": "Ivan Terpugov",
-    "license": "MIT"
+    "license": "MIT",
+
+    "dependencies": {
+        
+    }
 }
   

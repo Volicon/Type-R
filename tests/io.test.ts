@@ -1,7 +1,7 @@
 import "isomorphic-fetch";
 import nock from 'nock';
 import "reflect-metadata";
-import { auto, Collection, define, Record, Store, type, CollectionConstructor } from 'type-r';
+import { auto, Collection, define, Record, Store, type, CollectionConstructor } from '@type-r/models';
 import { attributesIO } from '../endpoints/attributes';
 import { localStorageIO } from '../endpoints/localStorage';
 import { memoryIO } from '../endpoints/memory';

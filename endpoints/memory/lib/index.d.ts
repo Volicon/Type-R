@@ -1,4 +1,4 @@
-import { IOEndpoint, IOPromise } from 'type-r';
+import { IOEndpoint, IOPromise } from '@type-r/models';
 export declare type Index = (number | string)[];
 export declare function create(init?: any[], delay?: number): MemoryEndpoint;
 export { create as memoryIO };

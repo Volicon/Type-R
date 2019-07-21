@@ -1,4 +1,4 @@
-import { Model, define, log, isProduction } from 'type-r';
+import { Model, define, log, isProduction } from '@type-r/models';
 import { RestfulFetchOptions, RestfulEndpoint, RestfulIOOptions, HttpMethod } from './restful';
 
 export type ConstructUrl = ( params : { [ key : string ] : any }, model? : Model ) => string;
