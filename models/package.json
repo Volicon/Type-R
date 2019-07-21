@@ -1,0 +1,84 @@
+{
+  "name": "@type-r/models",
+  "version": "4.0.0",
+  "description": "Serializable and observable classes for JS and TypeScript",
+  "main": "./dist/index.js",
+  "jsnext:main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "dist",
+    "lib",
+    "src",
+    "endpoints",
+    "ext-types",
+    "globals"
+  ],
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build:lib": "yarn compile:lib && yarn bundle:lib",
+    "build:cleanup": "rimraf ./lib",
+    "compile:lib": "yarn build:cleanup && ./node_modules/.bin/tsc",
+    "bundle:lib": "rollup --config",
+    "test:backbone": "qunit 'tests/backbone-regression/*.tst.js'",
+    "test:type-r": "jest",
+    "test": "npm run test:backbone && npm run test:type-r",
+    "build": "yarn && npm run build:lib && npm run build:endpoints && npm run build:ext-types && npm run build:globals && npm test && npm run docs",
+    "publish:alpha": "npm publish --tag alpha",
+    "publish:beta": "npm publish --tag beta"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaperton/TransactionalJS.git"
+  },
+  "keywords": [
+    "model",
+    "collection",
+    "backbonejs",
+    "data",
+    "nestedtypes",
+    "schema",
+    "serialization",
+    "validation",
+    "observable",
+    "reactive",
+    "orm",
+    "odm",
+    "typescript"
+  ],
+  "author": "Vlad Balin",
+  "contributors": [
+    "Ivan Terpugov <ru.ivan.alexandrovich@gmail.com>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gaperton/TransactionalJS/issues"
+  },
+  "homepage": "https://github.com/gaperton/TransactionalJS#readme",
+  "devDependencies": {
+    "@types/jest": "*",
+    "chai": "*",
+    "jest": "*",
+    "nock": "*",
+    "qunit": "*",
+    "reflect-metadata": "*",
+    "rimraf": "^2.6.3",
+    "rollup": "*",
+    "rollup-plugin-commonjs": "*",
+    "rollup-plugin-node-resolve": "*",
+    "rollup-plugin-paths": "*",
+    "rollup-plugin-sourcemaps": "*",
+    "rollup-plugin-uglify": "*",
+    "sinon": "*",
+    "sinon-chai": "*",
+    "ts-jest": "*",
+    "typescript": "*",
+    "underscore": "*"
+  },
+  "dependencies": {
+    "isomorphic-fetch": "*",
+    "tslib": "*"
+  }
+}
