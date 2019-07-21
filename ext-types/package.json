@@ -1,6 +1,6 @@
 {
     "name": "@type-r/ext-types",
-    "version": "1.0.1",
+    "version": "4.0.0",
     "main": "./dist/index.js",
     "jsnext:main": "./lib/index.js",
     "module": "./lib/index.js",

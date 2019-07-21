@@ -1,4 +1,4 @@
-import { Integer, MicrosoftDate, Timestamp } from "type-r/ext-types";
+import { Integer, MicrosoftDate, Timestamp } from '@type-r/ext-types';
 import { type, ChainableAttributeSpec } from '@type-r/models';
 
 /*
