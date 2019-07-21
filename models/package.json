@@ -18,14 +18,10 @@
     "test": "tests"
   },
   "scripts": {
-    "build:lib": "yarn compile:lib && yarn bundle:lib",
-    "build:cleanup": "rimraf ./lib",
-    "compile:lib": "yarn build:cleanup && ./node_modules/.bin/tsc",
-    "bundle:lib": "rollup --config",
-    "test:backbone": "qunit 'tests/backbone-regression/*.tst.js'",
-    "test:type-r": "jest",
-    "test": "npm run test:backbone && npm run test:type-r",
-    "build": "yarn && npm run build:lib && npm run build:endpoints && npm run build:ext-types && npm run build:globals && npm test && npm run docs",
+    "cleanup": "rimraf ./lib",
+    "compile": "yarn cleanup && tsc",
+    "bundle": "rollup --config",
+    "build": "yarn compile && yarn bundle",
     "publish:alpha": "npm publish --tag alpha",
     "publish:beta": "npm publish --tag beta"
   },

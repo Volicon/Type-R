@@ -1,0 +1,11 @@
+{
+    "private" : true,
+    "dependencies": {
+        "@type-r/models" : "^4.0.0"
+    },
+    "scripts": {
+        "test:backbone": "qunit 'backbone-regression/*.tst.js'",
+        "test:type-r": "jest",
+        "test": "yarn test:backbone && yarn test:type-r"
+    }
+}
