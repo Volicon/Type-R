@@ -3,7 +3,7 @@ import nock from 'nock';
 import "reflect-metadata";
 import { auto, Collection, define, Record, Store, type, CollectionConstructor } from '@type-r/models';
 import { attributesIO, RestfulEndpoint, restfulIO, memoryIO, localStorageIO } from '@type-r/endpoints';
-import "type-r/globals";
+import "@type-r/globals";
 
 describe( 'IO', function(){
     describe( 'memory endpoint', () => {
