@@ -1,62 +1,75 @@
-![master build](https://api.travis-ci.org/Volicon/Type-R.svg?branch=master)
+# Type-R Model Framework
 
-# Getting started
+Type-R models solves the problem of JSON not being able to handle complex JS data types, safeguards both frontend and backend from errors in JSON structure, 
 
-Type-R is the modern JS data framework to manage complex domain and UI application state. Features:
 
-- _It's mapped to JSON by default_. The mapping can handle sophisticated scenarios with nested JSON and relations by id, and can be easily customized for every particular attribute or class.
-- _All changes are observable_, happens in the scope of transactions, and there's the fine-grained change events system.
-- _Validation_ is performed on the first access to the validation error and never happens twice for unchanged data.
-- _Everything is typed at run-time_ and is protected from improper updates. The shape of generated JSON and data classes is guaranteed to match the definitions.
-- It still looks like regular JS classes and is freaking fast. Type-R data structures are about 10 times faster than Backbone models and collections.
+1. Programmer's mistake on frontend can't affect the JSON sent to ther server.
+2. Wrong JSON received from the server will be sanitazed and can't cause catastrophic failures on the frontend.
 
-![overview](docs/images/overview.png)
+3. Mapping of complex JS types to JSON (such as Date) is automatic which eliminates a possibility for a programmer's mistake and improves productivity. Less code to write means less things to unit test, less bugs to fix, and less code to understand when making changes.
 
-Data layer is defined as a superposition of three kinds of building blocks:
+4. Reduced cost of testing. There are virtually no point in unit-testing Type-R models as they are mostly declarative definitions. They are able to check the structural integrity of JSON data themselves, and Type-R can be instructed to throw exceptions instead of console logs in case of type assertion errors. It makes the unit tests of the data layer unnecessary, and greately reduces efforts for the integration test.
+
+5. Deeply observable data structures.
+
+
+
+
+
+
+
+
+
+
+Type-R models is the powerful JSON serialization engine for browsers, NodeJS, JavaScript, and TypeScript. Type-R models is a language to declaratively describe the mapping between JS classes and JSON data your backend or microservice provides, and then Type-R will do the rest.
+
+
 
 - *Record* classes with typed attributes.
 - Ordered *collections* of records.
 - *Stores* are records with a set of collections in its attributes used to resolve id-references in JSON.
 - *IOEndpoints* is an entity encapsulating I/O transport which represent the persistent collection of records.
 
-Type-R is completely unopinionated on the client-server transport protocol and the view layer technology. It's your perfect M and VM in modern MVVM or MVC architecture.
+Type-R is completely unopinionated on a client-server transport protocol and the view layer technology. It's your perfect M and VM in modern MVVM or MVC architecture.
 
 ```javascript
-import { define, Record } from 'type-r'
-
-// Define email attribute type with encapsulated validation check.
-const Email = String.has.check( x => x! || x.indexOf( '@' ) >= 0, 'Invalid email' );
+import { define, Record, Collection } from '@type-r/models'
+import { restfulIO } from '@type-r/endpoints'
 
 @define class User extends Record {
     static attributes = {
-        name  : String.isRequired, // should not be empty for the record to be valid.
-        email : Email.isRequired
+        name  : '',
+        email : ''
     }
 }
 
 @define class Message extends Record {
+    static endpoint = restfulIO( '/api/messages' );
+
     static attributes = {
-        created : Date //  = new Date()
+        createdAt : Date,
         author  : User, // aggregated User record.
-        to      : User.Collection, // aggregating collection of users
+        to      : Collection.of( User ), // aggregating collection of users
         subject : '',
         body    : ''
     }
 }
 
-const msg = new Message();
-assert( !msg.isValid() ); // Is not valid because msg.author has empty attributes
+const messages = Collection.of( Message ).create();
 
-// Listen for the changes in aggregation tree...
-msg.on( 'change', () => console.log( 'change!!!' ) );
+await messages.fetch({ params : { page : 0 }});
 
-msg.transaction( () => { // Prepare to make the sequence of changes on msg
-    msg.author.name = 'John Dee'; // No 'change' event yet as we're in the transaction. 
-    msg.author.email = 'dee@void.com'; 
+const msg = messages.first();
+msg.author.name = 'Alan Poe';
+msg.subject = 'Nevermore';
 
-    assert( msg.isValid() ); // Now msg is valid as all of its attributes are valid.
-}); // Got single 'change!!!' message in the console.
+await msg.save();
 ```
+
+## Architecture
+
+![overview](docs/images/overview.png)
+
 
 ## [Documentation](https://volijs.github.io/Type-R/)
 
