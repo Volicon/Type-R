@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { logger, Logger, type, auto, Collection, attributes, subsetOf, define, predefine, Record, CollectionConstructor, shared, memberOf } from '@type-r/models';
-import "type-r/globals";
+import "@type-r/globals";
 
 logger.off()
     .throwOn( 'error' )
