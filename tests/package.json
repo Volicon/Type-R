@@ -13,7 +13,8 @@
         "reflect-metadata": "*",
         "sinon": "*",
         "sinon-chai": "*",
-        "ts-jest": "*"    
+        "ts-jest": "*",
+        "underscore": "*"
     },
     "scripts": {
         "test:backbone": "qunit backbone-regression/*.tst.js",

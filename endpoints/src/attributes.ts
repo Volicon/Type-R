@@ -1,10 +1,8 @@
 import { IOEndpoint, IOOptions, IOPromise } from '@type-r/models'
 
-export function create(){
+export function attributesIO(){
     return new AttributesEndpoint();
 }
-
-export { create as attributesIO };
 
 export class AttributesEndpoint implements IOEndpoint {
     create( json, options : IOOptions ) : IOPromise<any> {

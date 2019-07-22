@@ -1,5 +1,5 @@
 {
-    "name": "globals",
+    "name": "@type-r/globals",
     "version": "4.0.0",
     "main": "./dist/index.js",
     "jsnext:main": "./lib/index.js",
