@@ -6,14 +6,7 @@ Written in TypeScript, works with ES5, ES6, and TypeScript.
 
 ## Installation
 
-`npm install mixturejs`
-
-## Events Performance
-
-MixtureJS is an alternative implementation of [Backbone API for Events](http://backbonejs.org/#Events) heavily optimized for modern JIT engines. Here's the results of the typical
-run of the [performance tests](https://github.com/Volicon/mixturejs/tree/master/tests).
-
-![performance](https://raw.githubusercontent.com/Volicon/mixturejs/master/perf-chart.jpg)
+`npm install @type-r/mixture`
 
 ## Features
 
@@ -35,7 +28,7 @@ Both plain JS object and class constructor may be used as mixins. In the case of
 You need to import `mixins` decorator to use mixins:
 
 ```javascript
-import { mixins } from 'mixturejs'
+import { mixins } from '@type-r/mixture'
 
 ...
 
@@ -47,11 +40,11 @@ class X {
 
 ### Merge Rules and React Compatibility
 
-MixtureJS implements _configurable_ merge rules, which allows to add standard React mixins functionality to the ES6 React Components.
+Mixture implements _configurable_ merge rules, which allows to add standard React mixins functionality to the ES6 React Components.
 
 ```javascript
 import React from 'react'
-import { Mixable } from 'mixturejs'
+import { Mixable } from '@type-r/mixture'
 
 // Make React.Component mixable...
 Mixable.mixTo( React.Component );
@@ -86,7 +79,7 @@ Here we adding [Events](http://backbonejs.org/#Events) support (on, off, trigger
 
 ```javascript
 import React from 'react'
-import { mixins, Events } from 'mixturejs'
+import { mixins, Events } from '@type-r/mixture'
 
 const UnsubscribeMixin = {
     componentWillUnmount(){
@@ -102,6 +95,11 @@ class EventedComponent extends React.Component {
 ```
 
 ## Events
+
+Mixture is an alternative implementation of [Backbone API for Events](http://backbonejs.org/#Events) heavily optimized for modern JIT engines. Here's the results of the typical
+run of the [performance tests](https://github.com/Volicon/mixturejs/tree/master/tests).
+
+![performance](https://raw.githubusercontent.com/Volicon/mixturejs/master/perf-chart.jpg)
 
 Mixture Events implements the complete semantic and API of [Backbone 1.1.x Events](http://backbonejs.org/#Events), with the following exceptions:
 
