@@ -66,8 +66,8 @@ export class Logger extends Messenger {
 let toString = typeof window === 'undefined' ? 
     something => {
         if( something && typeof something === 'object' ){
-            const { __inner_state__ } = something,
-                value = __inner_state__ || something,
+            // Support custom object wrappers...
+            const value = something.__inner_state__ || something,
                 isArray = Array.isArray( value );
 
             const body = isArray ? `[ length = ${ value.length } ]` : `{ ${ Object.keys( value ).join( ', ' )} }`;
