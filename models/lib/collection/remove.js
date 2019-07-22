@@ -1,4 +1,4 @@
-import { eventsApi } from '../object-plus';
+import { eventsApi } from '@type-r/mixture';
 import { transactionApi } from '../transactions';
 import { CollectionTransaction, free, removeIndex } from './commons';
 var trigger2 = eventsApi.trigger2, trigger3 = eventsApi.trigger3, markAsDirty = transactionApi.markAsDirty, begin = transactionApi.begin, commit = transactionApi.commit;

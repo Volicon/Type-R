@@ -77,8 +77,8 @@ export class Messenger implements Mixable, EventSource {
     /** Unique client-only id. */
     cid : string
 
-    /** @internal Prototype-only property to manage automatic local events subscription */ 
-    _localEvents : EventMap
+    /** Prototype-only property to manage automatic local events subscription */ 
+    protected _localEvents : EventMap
 
     constructor(){
         this.cid = uniqueId();

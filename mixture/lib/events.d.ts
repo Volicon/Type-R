@@ -25,6 +25,7 @@ export declare class Messenger implements Mixable, EventSource {
     static extend: (definition?: MessengerDefinition, statics?: object) => MixableConstructor;
     static onDefine({ localEvents, _localEvents, properties }: MessengerDefinition, BaseClass?: typeof Mixable): void;
     cid: string;
+    protected _localEvents: EventMap;
     constructor();
     initialize(): void;
     on(events: string | EventCallbacks<this>, callback?: any, context?: any): this;

@@ -1,4 +1,4 @@
-# MixtureJS
+# Mixture
 
 Mixins is very powerful abstraction addressing cross-cutting concerns, which can dramatically simplify inheritance graph when used wisely.
 

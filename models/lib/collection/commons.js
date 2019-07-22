@@ -1,4 +1,4 @@
-import { eventsApi } from '../object-plus';
+import { eventsApi } from '@type-r/mixture';
 import { ItemsBehavior, transactionApi } from '../transactions';
 var trigger2 = eventsApi.trigger2, trigger3 = eventsApi.trigger3, on = eventsApi.on, off = eventsApi.off, commit = transactionApi.commit, _aquire = transactionApi.aquire, _free = transactionApi.free;
 export function dispose(collection) {

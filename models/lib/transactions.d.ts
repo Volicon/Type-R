@@ -1,5 +1,5 @@
 import { IOEndpoint, IONode, IOPromise } from './io-tools';
-import { Logger, Messenger, MessengerDefinition, MixinsState } from './object-plus';
+import { Logger, Messenger, MessengerDefinition, MixinsState } from '@type-r/mixture';
 import { Traversable } from './traversable';
 import { Validatable, ValidationError } from './validation';
 export interface TransactionalDefinition extends MessengerDefinition {

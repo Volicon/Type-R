@@ -1,5 +1,5 @@
 import { IOPromise } from '../io-tools';
-import { EventMap, EventsDefinition, TheType } from '../object-plus';
+import { EventMap, EventsDefinition, TheType } from '@type-r/mixture';
 import { Record } from '../record';
 import { CloneOptions, Transactional, TransactionalDefinition, TransactionOptions } from '../transactions';
 import { AddOptions } from './add';

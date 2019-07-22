@@ -1,5 +1,5 @@
 import * as tslib_1 from "tslib";
-import { define, predefine, tools } from '../object-plus';
+import { define, predefine, tools } from '@type-r/mixture';
 import { Transactional } from '../transactions';
 import { type } from './attrDef';
 import { createAttributesMixin } from './mixin';

@@ -1,4 +1,4 @@
-import { eventsApi } from '../../object-plus';
+import { eventsApi } from '@type-r/mixture';
 import { ItemsBehavior, Transactional, transactionApi, TransactionOptions } from '../../transactions';
 import { AnyType } from './any';
 import { AttributesContainer, ConstructorOptions } from '../updates';

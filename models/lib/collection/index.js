@@ -1,6 +1,6 @@
 import * as tslib_1 from "tslib";
 import { startIO } from '../io-tools';
-import { define, definitions, EventMap, eventsApi, logger, Mixable, mixinRules, mixins } from '../object-plus';
+import { define, definitions, EventMap, eventsApi, logger, Mixable, mixinRules, mixins } from '@type-r/mixture';
 import { AggregatedType, Record, SharedType } from '../record';
 import { ItemsBehavior, Transactional, transactionApi } from '../transactions';
 import { addTransaction } from './add';

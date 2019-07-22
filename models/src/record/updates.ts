@@ -1,4 +1,4 @@
-import { eventsApi } from '../object-plus';
+import { eventsApi } from '@type-r/mixture';
 import { Owner, Transaction, Transactional, transactionApi, TransactionOptions } from "../transactions";
 const { begin : _begin, markAsDirty : _markAsDirty, commit } = transactionApi;
 

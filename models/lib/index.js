@@ -2,11 +2,11 @@ var _a;
 if (typeof Symbol === 'undefined') {
     Object.defineProperty(window, 'Symbol', { value: { iterator: 'Symbol.iterator' }, configurable: true });
 }
-import { Events, Mixable as Class } from './object-plus/';
+import { Events, Mixable as Class } from '@type-r/mixture';
 import { Record as Model } from './record';
 export * from './collection';
 export * from './io-tools';
-export * from './object-plus';
+export * from '@type-r/mixture';
 export * from './record';
 export * from './relations';
 export * from './transactions';

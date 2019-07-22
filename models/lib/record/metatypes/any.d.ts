@@ -1,5 +1,5 @@
 import { IOEndpoint } from '../../io-tools';
-import { LogLevel, Logger } from '../../object-plus';
+import { LogLevel, Logger } from '@type-r/mixture';
 import { TransactionOptions } from '../../transactions';
 import { AttributesContainer, AttributeUpdatePipeline, RecordTransaction } from '../updates';
 export declare type Transform = (this: AnyType, next: any, prev: any, record: AttributesContainer, options: TransactionOptions) => any;

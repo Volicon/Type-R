@@ -1,5 +1,5 @@
 import { CollectionConstructor } from '../collection';
-import { TheType } from '../object-plus';
+import { TheType } from '@type-r/mixture';
 import { CloneOptions, Owner, Transactional, TransactionalDefinition, TransactionOptions } from '../transactions';
 import { Infer } from './attrDef';
 import { IORecord } from './io-mixin';

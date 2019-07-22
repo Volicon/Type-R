@@ -1,5 +1,5 @@
 import { Collection, CollectionConstructor } from '../collection';
-import { define, tools } from '../object-plus';
+import { define, tools } from '@type-r/mixture';
 import { AggregatedType, ChainableAttributeSpec, Record, type } from '../record';
 import { ItemsBehavior, transactionApi } from '../transactions';
 import { CollectionReference, parseReference } from './commons';

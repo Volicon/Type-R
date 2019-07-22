@@ -1,5 +1,5 @@
 import * as tslib_1 from "tslib";
-import { eventsApi } from '../../object-plus';
+import { eventsApi } from '@type-r/mixture';
 import { ItemsBehavior, transactionApi } from '../../transactions';
 import { AnyType } from './any';
 var on = eventsApi.on, off = eventsApi.off, free = transactionApi.free, aquire = transactionApi.aquire;

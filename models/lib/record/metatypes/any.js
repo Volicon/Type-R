@@ -1,5 +1,5 @@
 import * as tslib_1 from "tslib";
-import { tools } from '../../object-plus';
+import { tools } from '@type-r/mixture';
 import { setAttribute } from '../updates';
 var notEqual = tools.notEqual, assign = tools.assign;
 var emptyOptions = {};

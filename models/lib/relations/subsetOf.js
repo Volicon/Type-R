@@ -1,6 +1,6 @@
 import * as tslib_1 from "tslib";
 import { Collection } from '../collection';
-import { define, tools } from '../object-plus';
+import { define, tools } from '@type-r/mixture';
 import { type } from '../record';
 import { ItemsBehavior, transactionApi } from '../transactions';
 import { parseReference } from './commons';

@@ -14,7 +14,6 @@ export interface EventsDefinition {
     [ events : string ] : Function | string | boolean
 }
 
-
 export class EventMap {
     handlers : EventDescriptor[] = [];
 
@@ -155,7 +154,6 @@ export interface Callback extends Function {
     _callback? : Function
 }
 
-/** @internal */
 export function on( source : EventSource, name : string, callback : Callback, context? : any ) : void {
     if( callback ){
         const _events = source._events || ( source._events = Object.create( null ) );
@@ -163,7 +161,6 @@ export function on( source : EventSource, name : string, callback : Callback, co
     }
 }
 
-/** @internal */
 export function once( source : EventSource, name : string, callback : Callback, context? : any ) : void {
     if( callback ){
         const once : Callback = _once( function(){
@@ -176,7 +173,6 @@ export function once( source : EventSource, name : string, callback : Callback, 
     }
 }
 
-/** @internal */
 export function off( source : EventSource, name? : string, callback? : Callback, context? : any ) : void {
     const { _events } = source;
     if( _events ){
@@ -206,7 +202,6 @@ export interface EventSource {
 
 const eventSplitter = /\s+/;
 
-/** @internal */
 export function strings( api : ApiEntry, source : EventSource, events : string, callback : Callback, context ){
     if( eventSplitter.test( events ) ){
         const names = events.split( eventSplitter );
@@ -215,15 +210,13 @@ export function strings( api : ApiEntry, source : EventSource, events : string, 
     else api( source, events, callback, context );
 }
 
-/** @internal */
 export type ApiEntry = ( source : EventSource, event : string, callback : Callback, context? : any ) => void
 
 /*********************************
  * Event-triggering API
  */
 
-/** @internal */
-export function trigger2( self : EventSource, name : string, a, b ) : void {
+ export function trigger2( self : EventSource, name : string, a, b ) : void {
     const { _events } = self;
     if( _events ){
         const queue = _events[ name ],
@@ -234,7 +227,6 @@ export function trigger2( self : EventSource, name : string, a, b ) : void {
     }
 };
 
-/** @internal */
 export function trigger3( self : EventSource, name : string, a, b, c ) : void{
     const { _events } = self;
     if( _events ){
@@ -246,7 +238,6 @@ export function trigger3( self : EventSource, name : string, a, b, c ) : void{
     }
 };
 
-/** @internal */
 export function trigger5( self : EventSource, name : string, a, b, c, d, e ) : void{
     const { _events } = self;
     if( _events ){

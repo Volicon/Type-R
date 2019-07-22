@@ -1,5 +1,5 @@
 import { IOEndpoint } from '../io-tools';
-import { EventsDefinition } from '../object-plus';
+import { EventsDefinition } from '@type-r/mixture';
 import { AttributeOptions, AttributeToJSON, Parse } from './metatypes';
 export interface AttributeCheck {
     (value: any, key: string): boolean;

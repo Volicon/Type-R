@@ -5,7 +5,7 @@
 
 import { CollectionConstructor } from '../collection';
 import { IOEndpoint } from '../io-tools';
-import { define, definitions, isProduction, Logger, logger, LogLevel, mixinRules, TheType, tools } from '../object-plus';
+import { define, definitions, isProduction, Logger, logger, LogLevel, mixinRules, TheType, tools } from '@type-r/mixture';
 import { CloneOptions, Owner, Transaction, Transactional, TransactionalDefinition, TransactionOptions } from '../transactions';
 import { ChildrenErrors } from '../validation';
 import { Infer, type } from './attrDef';

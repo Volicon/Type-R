@@ -8,7 +8,7 @@
  * Most frequent operation - single element remove. Thus, it have the fast-path.
  */
 
-import { eventsApi } from '../object-plus';
+import { eventsApi } from '@type-r/mixture';
 import { Record } from '../record';
 import { transactionApi, TransactionOptions } from '../transactions';
 import { CollectionCore, CollectionTransaction, free, removeIndex } from './commons';

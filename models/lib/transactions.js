@@ -1,6 +1,6 @@
 import * as tslib_1 from "tslib";
 import { abortIO } from './io-tools';
-import { define, definitions, eventsApi, Messenger, mixinRules, mixins, throwingLogger } from './object-plus';
+import { define, definitions, eventsApi, Messenger, mixinRules, mixins, throwingLogger } from '@type-r/mixture';
 import { resolveReference } from './traversable';
 import { ValidationError } from './validation';
 var trigger3 = eventsApi.trigger3, on = eventsApi.on, off = eventsApi.off;

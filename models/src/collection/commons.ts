@@ -1,4 +1,4 @@
-import { eventsApi, Logger } from '../object-plus';
+import { eventsApi, Logger } from '@type-r/mixture';
 import { Record } from '../record';
 import { ItemsBehavior, Owner, Transaction, Transactional, transactionApi, TransactionOptions } from '../transactions';
 

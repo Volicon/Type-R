@@ -1,5 +1,5 @@
 import * as tslib_1 from "tslib";
-import { define, definitions, isProduction, logger, mixinRules, tools } from '../object-plus';
+import { define, definitions, isProduction, logger, mixinRules, tools } from '@type-r/mixture';
 import { Transactional } from '../transactions';
 import { type } from './attrDef';
 import { IORecordMixin } from './io-mixin';

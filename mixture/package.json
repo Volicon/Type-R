@@ -1,7 +1,7 @@
 {
-  "name": "@type-r/models",
+  "name": "@type-r/mixture",
   "version": "4.0.0",
-  "description": "Serializable and observable classes for JS and TypeScript",
+  "description": "Mixins, Backbone-style events, underscore-style functions, logging.",
   "main": "./dist/index.js",
   "jsnext:main": "./lib/index.js",
   "module": "./lib/index.js",
@@ -9,21 +9,13 @@
   "files": [
     "dist",
     "lib",
-    "src",
-    "endpoints",
-    "ext-types",
-    "globals"
+    "src"
   ],
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "cleanup": "rimraf ./lib",
     "compile": "yarn cleanup && tsc",
     "bundle": "rollup --config",
-    "build": "yarn compile && yarn bundle",
-    "publish:alpha": "npm publish --tag alpha",
-    "publish:beta": "npm publish --tag beta"
+    "build": "yarn compile && yarn bundle"
   },
   "repository": {
     "type": "git",
@@ -54,7 +46,6 @@
   },
   "homepage": "https://github.com/gaperton/TransactionalJS#readme",
   "dependencies": {
-    "tslib": "*",
-    "@type-r/mixture" : "^4.0.0"
+    "tslib": "*"
   }
 }

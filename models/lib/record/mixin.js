@@ -1,5 +1,5 @@
 import * as tslib_1 from "tslib";
-import { eventsApi, tools as _ } from '../object-plus';
+import { eventsApi, tools as _ } from '@type-r/mixture';
 import { CompiledReference } from '../traversable';
 import { ChainableAttributeSpec } from './attrDef';
 import { AnyType } from './metatypes';

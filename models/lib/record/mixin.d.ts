@@ -1,5 +1,5 @@
 import { IOEndpoint } from '../io-tools';
-import { eventsApi } from '../object-plus';
+import { eventsApi } from '@type-r/mixture';
 import { AnyType } from './metatypes';
 import { ConstructorsMixin } from './updates';
 export interface RecordAttributesMixin extends ConstructorsMixin {

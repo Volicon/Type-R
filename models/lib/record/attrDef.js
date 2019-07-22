@@ -1,4 +1,4 @@
-import { definitionDecorator, EventMap, tools } from '../object-plus';
+import { definitionDecorator, EventMap, tools } from '@type-r/mixture';
 import { Transactional } from '../transactions';
 import { getMetatype, SharedType } from './metatypes';
 var assign = tools.assign;

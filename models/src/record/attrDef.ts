@@ -3,7 +3,7 @@
  * and returns object with spec.
  */
 import { IOEndpoint } from '../io-tools';
-import { definitionDecorator, EventMap, EventsDefinition, tools } from '../object-plus';
+import { definitionDecorator, EventMap, EventsDefinition, tools } from '@type-r/mixture';
 import { Transactional } from '../transactions';
 import { AttributeOptions, AttributeToJSON, getMetatype, Parse, SharedType } from './metatypes';
 import { AttributesContainer } from './updates';
