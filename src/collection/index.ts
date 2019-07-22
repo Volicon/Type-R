@@ -504,7 +504,7 @@ export class Collection< R extends Record = Record> extends Transactional implem
     _log( level : LogLevel, topic : string, text : string, value : object, a_logger? : Logger ) : void {
         ( a_logger || logger ).trigger( level, topic, `${ this.model.prototype.getClassName() }.${ this.getClassName() }: ` + text, {
             Argument : value,
-            'Attributes spec' : this.model.prototype._attributes
+            'Attributes spec' : this.model.prototype.__descByName
         });
     }
 

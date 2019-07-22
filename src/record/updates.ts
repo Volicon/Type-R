@@ -19,23 +19,23 @@ export type AttributesCopyConstructor = new ( values : object ) => AttributesVal
 export interface AttributesContainer extends Transactional, Owner, ConstructorsMixin {
     // Attribute descriptors.
     /** @internal */
-    _attributes : AttributesDescriptors
+    __descByName : AttributesDescriptors
 
-    // Attribute values.
-    attributes : AttributesValues
-
-    // Previous attribute values.
     /** @internal */
-    _previousAttributes : AttributesValues
+    __descriptors : AttributeUpdatePipeline[]
+
+    /** @internal */
+    _values : any[]
+
+    /** @internal */
+    _prevValues : any[]
 
     // Changed attributes cache. 
     /** @internal */
     _changedAttributes : AttributesValues
 }
 
-export interface AttributesValues {
-    [ name : string ] : any
-}
+export type AttributesValues = any[]
 
 export interface AttributesDescriptors {
     [ name : string ] : AttributeUpdatePipeline
@@ -47,16 +47,16 @@ export interface AttributeUpdatePipeline{
 
  // Optimized single attribute transactional update. To be called from attributes setters
  // options.silent === false, parse === false. 
-export function setAttribute( record : AttributesContainer, name : string, value : any ) : void {
+export function setAttribute( record : AttributesContainer, idx : number, value : any ) : void {
     // Open the transaction.
     const isRoot  = begin( record ),
           options = {};
 
     // Update attribute.      
-    if( record._attributes[ name ].doUpdate( value, record, options ) ){
+    if( record.__descriptors[ idx ].doUpdate( value, record, options ) ){
         // Notify listeners on changes.
         markAsDirty( record, options );
-        trigger3( record, 'change:' + name, record, record.attributes[ name ], options );
+        trigger3( record, 'change:' + name, record, record._values[ idx ], options );
     }
 
     // Close the transaction.
@@ -65,7 +65,7 @@ export function setAttribute( record : AttributesContainer, name : string, value
 
 function begin( record : AttributesContainer ){
     if( _begin( record ) ){
-        record._previousAttributes = new record.AttributesCopy( record.attributes );
+        record._prevValues = record._values.slice();
         record._changedAttributes = null;
         return true;
     }
@@ -104,8 +104,8 @@ export const UpdateRecordMixin = {
             
     // Handle nested changes. TODO: propagateChanges == false, same in transaction.
     _onChildrenChange( child : Transactional, options : TransactionOptions ) : void {
-        const { _ownerKey } = child,
-              attribute = this._attributes[ _ownerKey ];
+        const { _ownerAttrIdx } = child,
+              attribute = this.__descriptors__[ _ownerAttrIdx ];
 
         if( !attribute /* TODO: Must be an opposite, likely the bug */ || attribute.propagateChanges ) this.forceAttributeChange( _ownerKey, options );
     },
@@ -126,7 +126,7 @@ export const UpdateRecordMixin = {
         const isRoot = begin( this ),
                 changes : string[] = [],
                 nested : RecordTransaction[]= [],
-                { _attributes } = this,
+                { __descByName: _attributes } = this,
                 values = options.parse ? this.parse( a_values, options ) : a_values;
 
         let unknown;
@@ -169,31 +169,19 @@ export function unknownAttrsWarning( record : AttributesContainer, unknown : str
 }
 
 // One of the main performance tricks of Type-R.
-// Create loop unrolled constructors for internal attribute hash,
-// so the hidden class JIT optimization will be engaged and they will become static structs.
-// It dramatically improves record performance.
-export function constructorsMixin( attrDefs : AttributesDescriptors ) : ConstructorsMixin {
-    const attrs = Object.keys( attrDefs );
-
-    const AttributesCopy : AttributesCopyConstructor = new Function( 'values', `
-        ${ attrs.map( attr =>`
-            this.${ attr } = values.${ attr };
-        `).join( '' ) }
-    `) as any;
-
-    AttributesCopy.prototype = Object.prototype;
-
+export function constructorsMixin( attrs : AttributeUpdatePipeline[] ) : ConstructorsMixin {
     const Attributes : AttributesConstructor = new Function( 'record', 'values', 'options', `
-        var _attrs = record._attributes;
+        var _attrs = record.__descriptors__;
 
-        ${ attrs.map( attr =>`
-            this.${ attr } = _attrs.${ attr }.doInit( values.${ attr }, record, options );
-        `).join( '' ) }
+        return [
+        ${ attrs.map( ( attr, index ) =>`
+            _attrs[${ index }].doInit( values.${ attr.name }, record, options );
+        `).join( ',' ) } ]
     `) as any;
 
     Attributes.prototype = Object.prototype;
 
-    return { Attributes, AttributesCopy };
+    return { Attributes };
 }
 
 export function shouldBeAnObject( record : AttributesContainer, values : object, options ){
@@ -210,7 +198,7 @@ export class RecordTransaction implements Transaction {
     constructor( public object : AttributesContainer,
                  public isRoot : boolean,
                  public nested : Transaction[],
-                 public changes : string[] ){}
+                 public changes : number[] ){}
 
     // commit transaction
     commit( initiator? : AttributesContainer ) : void {
@@ -223,9 +211,9 @@ export class RecordTransaction implements Transaction {
 
         // Notify listeners on attribute changes...
         // Transaction is never created when silent option is set, so just send events out.
-        const { attributes, _isDirty } = object;
-        for( let key of changes ){
-            trigger3( object, 'change:' + key, object, attributes[ key ], _isDirty );
+        const { _values: __values__, __changeEventNames, _isDirty } = object;
+        for( let index of changes ){
+            trigger3( object, __changeEventNames[ index ], object, __values__[ index ], _isDirty );
         }
 
         this.isRoot && commit( object, initiator );

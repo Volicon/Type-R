@@ -142,12 +142,11 @@ export class AnyType implements AttributeUpdatePipeline {
     }
 
     doUpdate( value, record : AttributesContainer, options : TransactionOptions, nested? : RecordTransaction[] ){
-        const { name } = this,
-            { attributes } = record,
-              prev = attributes[ name ];
+        const { index } = this,
+            { _values: __values__ } = record,
+              prev = __values__[ index ];
 
-        const next = this.transform( value, prev, record, options );
-        attributes[ name ] = next;
+        const next = __values__[ index ] = this.transform( value, prev, record, options );
 
         if( this.isChanged( next, prev ) ) {
             // Do the rest of the job after assignment

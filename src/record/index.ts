@@ -42,7 +42,7 @@ Record.onDefine = function( definition : RecordDefinition, BaseClass : typeof Re
     const baseProto : Record = BaseClass.prototype;
 
     // Compile attributes spec, creating definition mixin.
-    const { properties, _localEvents, ...dynamicMixin } = createAttributesMixin( this.attributes = getAttributes( definition ), baseProto._attributes );
+    const { properties, _localEvents, ...dynamicMixin } = createAttributesMixin( this.attributes = getAttributes( definition ), baseProto.__descByName );
     assign( this.prototype, dynamicMixin );
     
     definition.properties = defaults( definition.properties || {}, properties );

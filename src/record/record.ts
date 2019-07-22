@@ -142,7 +142,7 @@ export class Record extends Transactional implements IORecord, AttributesContain
 
         var val, changed : {} | boolean = false,
             old          = this._transaction ? this._previousAttributes : this.attributes,
-            attrSpecs    = this._attributes;
+            attrSpecs    = this.__descByName;
 
         for( var attr in diff ){
             if( !attrSpecs[ attr ].isChanged( old[ attr ], ( val = diff[ attr ] ) ) ) continue;
@@ -157,7 +157,7 @@ export class Record extends Transactional implements IORecord, AttributesContain
         if( !_previousAttributes ) return false;
 
         return key ?
-                this._attributes[ key ].isChanged( this.attributes[ key ], _previousAttributes[ key ] ) :
+                this.__descByName[ key ].isChanged( this.attributes[ key ], _previousAttributes[ key ] ) :
                 !isEmpty( this.changed );
     }
 
@@ -223,7 +223,7 @@ export class Record extends Transactional implements IORecord, AttributesContain
 
     // Attributes specifications
     /** @internal */
-    _attributes : { [ key : string ] : AnyType }
+    __descByName : { [ key : string ] : AnyType }
 
     /** @internal */
     _attributesArray : AnyType[]
@@ -364,7 +364,7 @@ export class Record extends Transactional implements IORecord, AttributesContain
 
                 // Create models, if they are not exist.
                 if( !next ){
-                    const attrSpecs = model._attributes;
+                    const attrSpecs = model.__descByName;
                     if( attrSpecs ){
                         // If current object is model, create default attribute
                         var newModel = attrSpecs[ key ].create();
@@ -418,7 +418,7 @@ export class Record extends Transactional implements IORecord, AttributesContain
         ( a_logger || logger ).trigger( level, topic, this.getClassName() + ' ' + text, {
             ...props,
             'Record' : this,
-            'Attributes definition' : this._attributes
+            'Attributes definition' : this.__descByName
         });
     }
 
@@ -503,12 +503,12 @@ class BaseRecordAttributesCopy {
 Record.prototype.AttributesCopy = BaseRecordAttributesCopy;
 
 const IdAttribute = AnyType.create({ value : void 0 }, 'id' );
-Record.prototype._attributes = { id : IdAttribute };
+Record.prototype.__descByName = { id : IdAttribute };
 Record.prototype._attributesArray = [ IdAttribute ];
 
 function typeCheck( record : Record, values : object, options ){
     if( shouldBeAnObject( record, values, options ) ){
-        const { _attributes } = record;
+        const { __descByName: _attributes } = record;
         let unknown : string[];
 
         for( let name in values ){
