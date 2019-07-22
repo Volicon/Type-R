@@ -1,4 +1,4 @@
-import { Collection, CollectionConstructor } from '../collection';
+import { Collection, CollectionConstructor, ElementsArg, CollectionOptions } from '../collection';
 import { define, tools } from '@type-r/mixture';
 import { AggregatedType, ChainableAttributeSpec, Record, type } from '../record';
 import { ItemsBehavior, transactionApi } from '../transactions';
@@ -7,7 +7,7 @@ import { CollectionReference, parseReference } from './commons';
 
 type RecordsIds = ( string | number )[];
 
-export function subsetOf<X extends CollectionConstructor<R>, R extends Record>( this : void, masterCollection : CollectionReference, T? : X ) : ChainableAttributeSpec<X>{
+export function subsetOf<X extends CollectionConstructor<R>, R extends Record>( this : void, masterCollection : CollectionReference, T? : X ) : ChainableAttributeSpec<SubsetCollectionConstructor<R>>{
     const CollectionClass = T || Collection,
         // Lazily define class for subset collection, if it's not defined already...
         SubsetOf = CollectionClass._SubsetOf || ( CollectionClass._SubsetOf = defineSubsetCollection( CollectionClass as any ) as any ),
@@ -21,12 +21,23 @@ export function subsetOf<X extends CollectionConstructor<R>, R extends Record>( 
     );
 }
 
-Collection.prototype.createSubset = function( models : any, options ) : Collection {
-    const SubsetOf = subsetOf( this, this.constructor ).options.type,
+type subsetOfType = typeof subsetOf;
+
+declare module "../collection" {
+    namespace Collection {
+        export const subsetOf : subsetOfType;
+    }    
+}
+
+( Collection as any ).subsetOf = subsetOf;
+
+
+Collection.prototype.createSubset = function<M extends Record>( this : Collection<M>, models : any, options ) : SubsetCollection<M> {
+    const SubsetOf = subsetOf( this, this.constructor as any ).options.type,
           subset   = new SubsetOf( models, options );
         
     subset.resolve( this );
-    return subset;
+    return subset as any;
 }
 
 const subsetOfBehavior = ItemsBehavior.share | ItemsBehavior.persistent;
@@ -170,6 +181,19 @@ function defineSubsetCollection( CollectionClass : typeof Collection ) {
 
     return SubsetOfCollection;
 }
+
+export interface SubsetCollection<M extends Record> extends Collection<M>{
+    getModelIds() : string[]
+    toggle( modelOrId : string | M, val : boolean ) : boolean
+    addAll() : M[]
+    toggleAll() : M[]
+    resolve( baseCollection : Collection<M> ) : this
+}
+
+export interface SubsetCollectionConstructor<R extends Record = Record > {
+    new ( records? : ElementsArg<R> | string[], options?: CollectionOptions ) : SubsetCollection<R>
+    prototype : SubsetCollection<R>
+};
 
 function resolveRefs( master, elements ){
     const records = [];

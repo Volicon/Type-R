@@ -35,6 +35,8 @@ export interface CollectionConstructor<R extends Record = Record > extends TheTy
     Refs : CollectionConstructor<R>
 };
 
+type CollectionOf<M extends typeof Record> = M['Collection'] extends CollectionConstructor<InstanceType<M>> ? M['Collection'] : CollectionConstructor<InstanceType<M>>;
+
 @define({
     // Default client id prefix 
     cidPrefix : 'c',
@@ -61,7 +63,7 @@ export class Collection< R extends Record = Record> extends Transactional implem
      * 
      * const users = new ( Collection.of( User ) )
      */
-    static of<M extends typeof Record>( Ctor : M ) : M['Collection'] extends CollectionConstructor<InstanceType<M>> ? M['Collection'] : CollectionConstructor<InstanceType<M>> {
+    static of<M extends typeof Record>( Ctor : M ) : CollectionOf<M> {
         return Ctor.Collection as any;
     }
 
@@ -72,9 +74,10 @@ export class Collection< R extends Record = Record> extends Transactional implem
      * 
      * const users = new ( Collection.ofRefs( User ) )
      */
-    static ofRefs<M extends typeof Record>( Ctor : M ) : M['Collection'] extends CollectionConstructor<InstanceType<M>> ? M['Collection'] : CollectionConstructor<InstanceType<M>> {
+    static ofRefs<M extends typeof Record>( Ctor : M ) : CollectionOf<M> {
         return Ctor.Collection.Refs as any;
     }
+
 
     static Subset : typeof Collection
     static Refs : any
