@@ -9,7 +9,8 @@
         "build":"tsc && rollup --config"
     },
     "dependencies": {
-        "@type-r/models" : "^4.0.0"
+        "@type-r/models" : "^4.0.0",
+        "tslib":"*"
     },
     "author": "Ivan Terpugov",
     "license": "MIT"

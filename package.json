@@ -8,5 +8,16 @@
         "build" : "yarn && yarn build:all && yarn test",
         "build:all" : "yarn workspaces run build",
         "test" : "yarn workspace @type-r/tests test"
-    }
+    },
+
+    "devDependencies": {
+      "rimraf": "^2.6.3",
+      "rollup": "*",
+      "rollup-plugin-commonjs": "*",
+      "rollup-plugin-node-resolve": "*",
+      "rollup-plugin-paths": "*",
+      "rollup-plugin-sourcemaps": "*",
+      "rollup-plugin-uglify": "*",
+      "typescript": "*"
+    }  
 }

@@ -53,16 +53,6 @@
     "url": "https://github.com/gaperton/TransactionalJS/issues"
   },
   "homepage": "https://github.com/gaperton/TransactionalJS#readme",
-  "devDependencies": {
-    "rimraf": "^2.6.3",
-    "rollup": "*",
-    "rollup-plugin-commonjs": "*",
-    "rollup-plugin-node-resolve": "*",
-    "rollup-plugin-paths": "*",
-    "rollup-plugin-sourcemaps": "*",
-    "rollup-plugin-uglify": "*",
-    "typescript": "*"
-  },
   "dependencies": {
     "tslib": "*"
   }
