@@ -19,7 +19,7 @@ export declare class ChainableAttributeSpec<F extends Function> {
     endpoint(endpoint: IOEndpoint): this;
     watcher(ref: string | ((value: any, key: string) => void)): this;
     parse(fun: Parse): this;
-    toJSON(fun: AttributeToJSON): this;
+    toJSON(fun: AttributeToJSON | false): this;
     get(fun: any): this;
     set(fun: any): this;
     changeEvents(events: boolean): this;

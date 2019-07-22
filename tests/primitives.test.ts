@@ -184,7 +184,7 @@ describe( 'Record', () =>{
 
             it( "infers types from values", () =>{
                 const m = new M(),
-                      { _attributes } = m;
+                      { _attributes } = m as any;
 
                 expect( _attributes.s.type ).toBe( String );
                 expect( _attributes.n.type ).toBe( Number );

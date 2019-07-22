@@ -81,7 +81,7 @@ export class ChainableAttributeSpec<F extends Function>{
         return this.metadata({ parse : fun });
     }
 
-    toJSON( fun : AttributeToJSON) : this {
+    toJSON( fun : AttributeToJSON | false ) : this {
         return this.metadata({
             toJSON : typeof fun === 'function' ? fun : ( fun ? ( x, k, o ) => x && x.toJSON( o ) : emptyFunction ) 
         });

@@ -17,6 +17,7 @@
         "underscore": "*"
     },
     "scripts": {
+        "build":"echo Tests: nothing to build, skipping",
         "test:backbone": "qunit backbone-regression/*.tst.js",
         "test:type-r": "jest",
         "test": "yarn test:backbone && yarn test:type-r"

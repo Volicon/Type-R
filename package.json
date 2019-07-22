@@ -5,7 +5,8 @@
     ],
 
     "scripts" : {
-        "build" : "yarn workspaces run build",
-        "test" : "yarn workspaces run test"
+        "build" : "yarn && yarn build:all && yarn test",
+        "build:all" : "yarn workspaces run build",
+        "test" : "yarn workspace @type-r/tests test"
     }
 }
