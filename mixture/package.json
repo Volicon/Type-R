@@ -1,7 +1,7 @@
 {
   "name": "@type-r/mixture",
-  "version": "4.0.0",
-  "description": "Mixins, Backbone-style events, underscore-style functions, logging.",
+  "version": "4.0.1",
+  "description": "React-style mixins, Backbone-style events, logging router.",
   "main": "./dist/index.js",
   "jsnext:main": "./lib/index.js",
   "module": "./lib/index.js",
@@ -17,35 +17,24 @@
     "bundle": "rollup --config",
     "build": "yarn compile && yarn bundle"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gaperton/TransactionalJS.git"
-  },
+  "repository": "git+https://github.com/VoliJS/Type-R.git",
   "keywords": [
-    "model",
-    "collection",
-    "backbonejs",
-    "data",
-    "nestedtypes",
-    "schema",
-    "serialization",
-    "validation",
-    "observable",
-    "reactive",
-    "orm",
-    "odm",
+    "mixins",
+    "events",
+    "logging",
+    "underscore",
+    "backbone",
     "typescript"
   ],
   "author": "Vlad Balin",
-  "contributors": [
-    "Ivan Terpugov <ru.ivan.alexandrovich@gmail.com>"
-  ],
+  "contributors": [],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gaperton/TransactionalJS/issues"
+    "url": "https://github.com/VoliJS/Type-R/issues"
   },
-  "homepage": "https://github.com/gaperton/TransactionalJS#readme",
+  "homepage": "https://github.com/VoliJS/Type-R/tree/develop/mixture",
   "dependencies": {
     "tslib": "*"
-  }
+  },
+  "private": false
 }
