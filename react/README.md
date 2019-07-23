@@ -19,3 +19,15 @@ const StatefulComponent = () => {
         <div> Loading... </div>
 }
 ```
+
+## StateRefs
+
+Genious.
+
+```javascript
+user.$.name
+
+const user$ = user.$
+```
+
+!!! Think about moving Link core to separate package and move support to type-r.

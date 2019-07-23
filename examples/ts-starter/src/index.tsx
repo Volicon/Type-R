@@ -19,7 +19,6 @@ const Main = exposeStore( MyStore,
                             <td>{ user.name }</td>
                             <td>{ user.email }</td>
                             <td>
-                                <checkbox { ...user.$('checked' ) }/>
                                 <checkbox { ...user.$.checked }/>
                             </td>
                         </tr>
