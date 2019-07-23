@@ -4,6 +4,7 @@ import { Collection, Store, define } from '@type-r/models';
 import { attributesIO } from '@type-r/endpoints';
 
 import { User } from './user'
+import { Model } from '@type-r/models/src';
 
 const Main = exposeStore( MyStore, 
     ({ store }) => {
@@ -18,9 +19,8 @@ const Main = exposeStore( MyStore,
                             <td>{ user.name }</td>
                             <td>{ user.email }</td>
                             <td>
-                                <checkbox checked={user.active}
-                                          onChange={ ({ target }) => user.active = target.value }/>
-                                
+                                <checkbox { ...user.$('checked' ) }/>
+                                <checkbox { ...user.$.checked }/>
                             </td>
                         </tr>
                     )}
@@ -29,3 +29,11 @@ const Main = exposeStore( MyStore,
                 <div>Loading...</div>
     }
 );
+
+class ModelAttributeRefs {
+    _model : Model;
+    
+    get name(){
+        return this.name || ( this.name = new ModelLink( this._model, name ) );
+    }
+}
