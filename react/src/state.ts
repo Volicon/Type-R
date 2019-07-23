@@ -1,63 +1,51 @@
 import { useReducer, useRef, useEffect } from 'react'
 import { Model, Collection, Transactional } from '@type-r/models'
 
-// Use model as local component state. Update the component when model changes.
-export function useModel( Ctor : typeof Model ) : Model {
-    // Get the model instance.
-    const placeholder = useRef( null ),
-        instance = placeholder.current || ( placeholder.current = new Ctor() );
+export const useModel : <M extends typeof Model>( Ctor : M ) => InstanceType<M> = mutableHook( Model => new Mutable( new Model ) );
 
-    useChangesAndDispose( instance );
-
-    return instance;
+export interface CollectionHooks {
+    of<M extends typeof Model>( Ctor : M ) : Collection<InstanceType<M>>
+    ofRefs<M extends typeof Model>( Ctor : M ) : Collection<InstanceType<M>>
+    subsetOf<C extends Collection>( collection : C ) : C
 }
 
-export const useCollection = {
-    of<M extends typeof Model>( Ctor : M ) : Collection<InstanceType<M>> {
-        // Get the model instance.
-        const placeholder = useRef( null ),
-            instance = placeholder.current || ( placeholder.current = new ( Collection.of( Ctor ) )() );
-    
-        useChangesAndDispose( instance );
-    
-        return instance;
-    },
+export const useCollection : CollectionHooks = {
+    of : mutableHook( Model => new Mutable( new ( Collection.of( Model ) )() ) ),
+    ofRefs : mutableHook( Model => new Mutable( new ( Collection.ofRefs( Model ) )() ) ),
+    subsetOf : mutableHook( collection => new Mutable( collection.createSubset([]) ) )
+}
 
-    ofRefs<M extends typeof Model>( Ctor : M ) : Collection<InstanceType<M>> {
-        // Get the model instance.
-        const placeholder = useRef( null ),
-            instance = placeholder.current || ( placeholder.current = new ( Collection.ofRefs( Ctor ) )() );
-    
-        useChangesAndDispose( instance );
-    
-        return instance;
-    },
+class Mutable {
+    _onChildrenChange : Function = void 0
 
-    subsetOf<C extends Collection>( collection : C ) : C {
-        const placeholder = useRef( null ),
-        instance = placeholder.current || ( placeholder.current = collection.createSubset([]) );
-
-        useChangesAndDispose( instance );
-
-        return instance;
+    constructor(
+        public value : Transactional
+    ){
+        value._owner = this;
+        value._ownerKey || ( value._ownerKey = 'reactState' );
     }
 }
 
-function useChangesAndDispose( instance : Transactional ){
-    const forceUpdate = useForceUpdate();
+function mutableReducer( mutable : Mutable ){
+    const copy = new Mutable( mutable.value );
+    copy._onChildrenChange = mutable._onChildrenChange;
+    return copy;
+}
 
-    useEffect( () => {
-        instance.onChanges( forceUpdate );
-        return () => instance.dispose();
-    }, emptyArray );
+function mutableHook( create : ( x : any ) => Mutable ) : any {
+    return ( init : any ) : Transactional => {
+        // Get the model instance.
+        const [ mutable, forceUpdate ] = useReducer( mutableReducer, init, create );
+
+        // TODO: mutable.store = useContext( Store )???
+    
+        useEffect( () => {
+            mutable._onChildrenChange = forceUpdate;
+            return () => mutable.value.dispose();
+        }, emptyArray );
+    
+        return mutable.value as any;
+    }
 }
 
 const emptyArray = [];
-
-export function useForceUpdate(){
-    return useReducer( transactionalUpdate, null )[ 1 ];
-}
-
-function transactionalUpdate( _changeToken : object, modelOrCollection : Transactional ){
-    return ( modelOrCollection as any )._changeToken;
-}

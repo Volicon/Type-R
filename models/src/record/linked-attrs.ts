@@ -1,19 +1,9 @@
-import { Model, InferAttrs } from '@type-r/models'
-import { StateRef } from 'valuelink'
+import { Record } from './record'
+import { ValueLink } from '@linked/value'
 
-Object.defineProperty( Model.prototype, '$', {
-    get(){
-        return this._attributeRefs || ( this._attributeRefs = new this.AttributeRefs( this ) )
-    }
-});
-
-// Override Model.onDefine
-const { onDefine } = Model;
-Model.onDefine = function( this : typeof Model, definition, BaseClass ){
-    onDefine.apply( this, arguments );
-
-    const { prototype } = this;
-    const { _attributesArray } = prototype as any;
+export function addAttributeLinks( Model : typeof Record ){
+    const { prototype } = Model;
+    const { _attributesArray } = prototype;
 
     const AttributeRefs = new Function('model', `
         this._model = model;
@@ -38,8 +28,12 @@ Model.onDefine = function( this : typeof Model, definition, BaseClass ){
     ( prototype as any ).AttributeRefs = AttributeRefs;
 }
 
-class ModelAttrRef extends StateRef<any> {
-    constructor( protected model : Model, protected attr : string ){
+export type LinkedAttributes<T> = {
+    readonly [ K in keyof T ] : ValueLink<T[K]>
+}
+
+export class ModelAttrRef extends ValueLink<any> {
+    constructor( protected model : Record, protected attr : string ){
         super( model[ attr ] );
     }
 
@@ -57,6 +51,3 @@ class ModelAttrRef extends StateRef<any> {
         this._error = x;
     }
 }
-
-export type AttributesMixin<M extends { attributes : object }> = InferAttrs<M['attributes']> & { $ : StateRefs<InferAttrs<M['attributes']>>}
-type StateRefs<T> = { [ K in keyof T ] : StateRef<T[K]>}

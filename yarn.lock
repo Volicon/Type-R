@@ -285,6 +285,13 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
+"@linked/value@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@linked/value/-/value-3.0.0.tgz#15d8c46907ab5c4f309b4d795c15262748f12ada"
+  integrity sha512-iMa4dTftrzJ5zkqLdO6mV6bW2fcrrWycnI2L2910mEjHOgqAIbcvQBRvfFtvh9oxRDvb5bzqxX7FPsMLFkQQAQ==
+  dependencies:
+    tslib "^1.9.3"
+
 "@sinonjs/commons@^1", "@sinonjs/commons@^1.0.2", "@sinonjs/commons@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.4.0.tgz#7b3ec2d96af481d7a0321252e7b1c94724ec5a78"
@@ -3739,7 +3746,7 @@ ts-jest@*:
     semver "^5.5"
     yargs-parser "10.x"
 
-tslib@*:
+tslib@*, tslib@^1.9.3:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
