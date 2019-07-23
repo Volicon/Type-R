@@ -19,9 +19,10 @@ export interface CollectionConstructor<R extends Record = Record> extends TheTyp
     prototype: Collection<R>;
     Refs: CollectionConstructor<R>;
 }
+declare type CollectionOf<M extends typeof Record> = M['Collection'] extends CollectionConstructor<InstanceType<M>> ? M['Collection'] : CollectionConstructor<InstanceType<M>>;
 export declare class Collection<R extends Record = Record> extends Transactional implements CollectionCore, Iterable<R> {
-    static of<M extends typeof Record>(Ctor: M): M['Collection'] extends CollectionConstructor<InstanceType<M>> ? M['Collection'] : CollectionConstructor<InstanceType<M>>;
-    static ofRefs<M extends typeof Record>(Ctor: M): M['Collection'] extends CollectionConstructor<InstanceType<M>> ? M['Collection'] : CollectionConstructor<InstanceType<M>>;
+    static of<M extends typeof Record>(Ctor: M): CollectionOf<M>;
+    static ofRefs<M extends typeof Record>(Ctor: M): CollectionOf<M>;
     static Subset: typeof Collection;
     static Refs: any;
     createSubset(models: ElementsArg<R>, options?: CollectionOptions): Collection<R>;
@@ -67,3 +68,4 @@ export interface Collection<R extends Record> extends ArrayMixin<R> {
 }
 export declare type LiveUpdatesOption = boolean | ((x: any) => boolean);
 export declare type ElementsArg<R = Record> = Partial<R> | Partial<R>[];
+export {};

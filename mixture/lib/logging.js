@@ -49,7 +49,7 @@ export { Logger };
 var toString = typeof window === 'undefined' ?
     function (something) {
         if (something && typeof something === 'object') {
-            var __inner_state__ = something.__inner_state__, value = __inner_state__ || something, isArray = Array.isArray(value);
+            var value = something.__inner_state__ || something, isArray = Array.isArray(value);
             var body = isArray ? "[ length = " + value.length + " ]" : "{ " + Object.keys(value).join(', ') + " }";
             return something.constructor.name + ' ' + body;
         }

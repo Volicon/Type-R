@@ -7,6 +7,7 @@ import { CollectionReference, parseReference } from './commons';
 
 type RecordsIds = ( string | number )[];
 
+// TODO: Change the last parameter to be the Model constructor. Extract the proper Collection type.
 export function subsetOf<X extends CollectionConstructor<R>, R extends Record>( this : void, masterCollection : CollectionReference, T? : X ) : ChainableAttributeSpec<SubsetCollectionConstructor<R>>{
     const CollectionClass = T || Collection,
         // Lazily define class for subset collection, if it's not defined already...
@@ -20,6 +21,7 @@ export function subsetOf<X extends CollectionConstructor<R>, R extends Record>( 
         }
     );
 }
+
 
 type subsetOfType = typeof subsetOf;
 

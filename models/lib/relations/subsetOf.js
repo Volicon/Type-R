@@ -11,6 +11,7 @@ export function subsetOf(masterCollection, T) {
         return refs;
     });
 }
+Collection.subsetOf = subsetOf;
 Collection.prototype.createSubset = function (models, options) {
     var SubsetOf = subsetOf(this, this.constructor).options.type, subset = new SubsetOf(models, options);
     subset.resolve(this);
@@ -122,6 +123,7 @@ function defineSubsetCollection(CollectionClass) {
     SubsetOfCollection.prototype._itemEvents = void 0;
     return SubsetOfCollection;
 }
+;
 function resolveRefs(master, elements) {
     var records = [];
     for (var _i = 0, elements_1 = elements; _i < elements_1.length; _i++) {
