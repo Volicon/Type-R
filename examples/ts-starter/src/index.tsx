@@ -5,16 +5,10 @@ import { attributesIO } from '@type-r/endpoints';
 
 import { User } from './user'
 
-@define class MyStore extends Store {
-    static endpoint = attributesIO()
-    static attributes = {
-        users : Collection.of( User )
-    }
-}
-
 const Main = exposeStore( MyStore, 
     ({ store }) => {
-        const isReady = useIO( () => store.fetch() );
+        const users = useCollection.of( User ),
+            isReady = useIO( () => users.fetch() );
 
         return isReady ?
                 <table>
